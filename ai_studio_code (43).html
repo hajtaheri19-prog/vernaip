@@ -1,1676 +1,0 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verna IP | ورنا آی‌پی - پلتفرم جامع تحلیل شبکه</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
-        
-        :root {
-            --font-persian: 'Vazirmatn', 'Tahoma', sans-serif;
-            --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
-            --font-inter: 'Inter', sans-serif;
-            
-            --primary-dark: #0a0a1a;
-            --secondary-dark: #141428;
-            --accent-dark: #1a1a3a;
-            --surface-dark: #0f0f1f;
-            
-            --neon-blue: #00d4ff;
-            --neon-purple: #a855f7;
-            --neon-pink: #ec4899;
-            --neon-green: #10b981;
-            --neon-orange: #f59e0b;
-            --neon-cyan: #06b6d4;
-            --neon-red: #ef4444;
-            
-            --glass-bg: rgba(10, 10, 26, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-        }
-        
-        * {
-            font-family: var(--font-persian);
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
-        }
-        
-        body {
-            background: 
-                radial-gradient(ellipse at top left, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at top right, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at bottom right, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
-                linear-gradient(135deg, #0a0a1a 0%, #0f0f1f 25%, #141428 50%, #1a1a3a 75%, #0a0a1a 100%);
-            background-attachment: fixed;
-            color: #ffffff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            animation: backgroundShift 30s ease-in-out infinite;
-        }
-        
-        @keyframes backgroundShift {
-            0%, 100% { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 0%; }
-            50% { background-position: 20% 0%, 80% 20%, 20% 80%, 80% 80%, 0% 0%; }
-        }
-        
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px) saturate(200%);
-            -webkit-backdrop-filter: blur(25px) saturate(200%);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: 24px;
-            padding: 1.5rem; /* Compact padding */
-        }
-        
-        .glass-light {
-            background: rgba(10, 10, 26, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-        }
-        
-        .toolbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: linear-gradient(135deg, rgba(10, 10, 26, 0.98) 0%, rgba(15, 15, 35, 0.98) 100%);
-            backdrop-filter: blur(30px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            padding: 12px 0;
-        }
-        
-        .toolbar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), var(--neon-pink), transparent);
-            background-size: 400% 100%;
-            animation: gradientFlow 8s ease-in-out infinite;
-        }
-        
-        @keyframes gradientFlow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px;
-            animation: logoGlow 4s ease-in-out infinite alternate;
-        }
-        
-        @keyframes logoGlow {
-            0% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
-            100% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.6); }
-        }
-        
-        .btn-premium {
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
-            background-size: 200% 200%;
-            animation: buttonGradient 6s ease-in-out infinite;
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
-        }
-        
-        .btn-premium:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 12px 48px rgba(0, 212, 255, 0.4);
-        }
-
-        .btn-premium:disabled {
-            background: linear-gradient(135deg, #4b5563, #6b7280);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        
-        .btn-display-only {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(168, 85, 247, 0.3));
-            border: 2px solid rgba(0, 212, 255, 0.5);
-            color: rgba(255, 255, 255, 0.8);
-            cursor: default;
-            animation: none;
-        }
-        
-        .btn-display-only:hover {
-            transform: none;
-            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
-        }
-        
-        @keyframes buttonGradient {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .data-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 1.25rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .data-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
-            background-size: 300% 100%;
-            animation: cardGradient 8s ease-in-out infinite;
-        }
-        
-        .data-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 212, 255, 0.2);
-            border-color: var(--neon-blue);
-        }
-        
-        @keyframes cardGradient {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-family: var(--font-inter);
-        }
-        
-        .terminal {
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 12px;
-            padding: 1rem;
-            font-family: var(--font-mono);
-            color: var(--neon-green);
-            position: relative;
-            overflow: hidden;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .terminal.fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 9999;
-            max-height: none;
-            border-radius: 0;
-            padding: 40px 20px 20px 20px;
-        }
-        
-        .terminal::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 24px;
-            background: linear-gradient(135deg, rgba(15, 15, 35, 0.9), rgba(26, 26, 46, 0.9));
-            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
-        }
-        
-        .terminal::after {
-            content: '● ● ●';
-            position: absolute;
-            top: 6px;
-            left: 8px;
-            color: var(--neon-pink);
-            font-size: 10px;
-        }
-        
-        .terminal-header {
-            position: absolute;
-            top: 4px;
-            right: 8px;
-            display: flex;
-            gap: 4px;
-            z-index: 1;
-        }
-        
-        .terminal-btn {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8px;
-            transition: all 0.2s ease;
-        }
-        
-        .terminal-btn.fullscreen-btn {
-            background: var(--neon-green);
-            color: black;
-        }
-        
-        .terminal-btn.fullscreen-btn:hover {
-            background: var(--neon-blue);
-            transform: scale(1.1);
-        }
-        
-        .terminal-content {
-            margin-top: 16px;
-            white-space: pre-wrap;
-            line-height: 1.5;
-            font-size: 12px;
-        }
-        
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-        
-        .text-gradient {
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 300% 300%;
-            animation: textGradient 5s ease-in-out infinite;
-        }
-        
-        @keyframes textGradient {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .text-glow {
-            text-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
-        }
-        
-        .pulse-glow {
-            animation: pulseGlow 3s ease-in-out infinite;
-        }
-        
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 16px rgba(0, 212, 255, 0.3); }
-            50% { box-shadow: 0 0 32px rgba(0, 212, 255, 0.6); }
-        }
-        
-        /* New Improved Speed Gauge Styles */
-        .speed-gauge {
-            width: 250px;
-            height: 250px;
-            position: relative;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, var(--secondary-dark) 65%, var(--primary-dark) 85%);
-            box-shadow: 
-                inset 0 0 30px rgba(0,0,0,0.8),
-                0 0 20px rgba(168, 85, 247, 0.3),
-                0 0 40px rgba(0, 212, 255, 0.2);
-            border: 2px solid rgba(255,255,255,0.1);
-        }
-        .speed-gauge::before {
-            content: '';
-            position: absolute;
-            top: 5px; left: 5px; right: 5px; bottom: 5px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.1);
-            background: conic-gradient(from 135deg at 50% 50%, 
-                var(--neon-purple) 0%, 
-                var(--neon-blue) 40%, 
-                var(--neon-cyan) 50%, 
-                var(--neon-green) 60%, 
-                var(--neon-orange) 85%, 
-                var(--neon-red) 100%);
-            mask-image: conic-gradient(from -45deg, transparent 0, black 20%, black 80%, transparent 100%);
-            -webkit-mask-image: conic-gradient(from -45deg, transparent 0, black 20%, black 80%, transparent 100%);
-            animation: gaugeGlow 5s ease-in-out infinite;
-        }
-        .speed-gauge::after { /* Inner shadow ring */
-            content: '';
-            position: absolute;
-            top: 15px; left: 15px; right: 15px; bottom: 15px;
-            border-radius: 50%;
-            box-shadow: inset 0 0 25px rgba(0,0,0,0.9);
-        }
-
-        .speedometer-center {
-            width: 20px; height: 20px;
-            background: radial-gradient(circle, #fff, #bbb);
-            border-radius: 50%;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 20;
-            box-shadow: 0 0 15px rgba(255,255,255,0.5);
-            border: 2px solid #555;
-        }
-
-        .speed-needle {
-            width: 4px; height: 90px;
-            background: linear-gradient(to top, var(--neon-pink), #fff);
-            position: absolute;
-            bottom: 50%; left: 50%;
-            transform-origin: bottom center;
-            transform: translateX(-50%) rotate(-135deg);
-            border-radius: 2px;
-            z-index: 15;
-            box-shadow: 0 0 15px var(--neon-pink);
-            transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .speed-value-container {
-            position: absolute;
-            top: 60%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            text-align: center;
-        }
-        .speed-value {
-            font-family: var(--font-mono);
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-        }
-        
-        .notification {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 12px 20px;
-            color: white;
-            transform: translateX(400px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 1000;
-            max-width: 300px;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        
-        .notification.success { border-left: 3px solid var(--neon-green); }
-        .notification.error { border-left: 3px solid var(--neon-red); }
-        .notification.info { border-left: 3px solid var(--neon-blue); }
-        
-        .lang-toggle {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 4px;
-            display: flex;
-            gap: 2px;
-        }
-        
-        .lang-btn {
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .lang-btn.active {
-            background: var(--neon-blue);
-            color: white;
-            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
-        }
-
-        /* DNS Section Styles */
-        .dns-card {
-            background: rgba(26, 26, 46, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        .dns-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--neon-purple);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .dns-copy-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--neon-cyan);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .dns-copy-btn:hover {
-            background: var(--neon-cyan);
-            color: var(--primary-dark);
-        }
-
-        /* AI Chat Styles */
-        #ai-fab {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1001;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            animation: pulseGlow 3s ease-in-out infinite;
-        }
-        #ai-fab.hidden {
-            transform: scale(0.5);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        #ai-chat-modal {
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            width: 350px;
-            height: 500px;
-            z-index: 1000;
-            transform: translateY(20px) scale(0.95);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        #ai-chat-modal.visible {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .ai-chat-window {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        .ai-chat-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .ai-chat-messages {
-            flex-grow: 1;
-            padding: 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .ai-message {
-            padding: 10px 14px;
-            border-radius: 12px;
-            max-width: 80%;
-            line-height: 1.5;
-            min-width: 0;
-        }
-        /* FIX for text wrapping */
-        .ai-message p {
-            overflow-wrap: break-word; /* Standard property */
-            word-break: break-word;   /* Softer word breaking */
-            min-width: 0;             /* Important for flexbox children */
-        }
-        .user-message {
-            background: var(--neon-blue);
-            color: var(--primary-dark);
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-        .bot-message {
-            background: var(--accent-dark);
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-        .ai-chat-input-area {
-            padding: 12px;
-            border-top: 1px solid var(--glass-border);
-            display: flex;
-            gap: 8px;
-        }
-        .ai-chat-input {
-            flex-grow: 1;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            color: white;
-            padding: 8px 12px;
-            font-size: 14px;
-        }
-        .ai-chat-input:focus {
-            outline: none;
-            border-color: var(--neon-blue);
-        }
-        .ai-chat-send-btn {
-            background: var(--neon-blue);
-            border: none;
-            border-radius: 10px;
-            width: 40px;
-            height: 40px;
-            color: var(--primary-dark);
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .faq-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--neon-cyan);
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-        .faq-button:hover {
-            background: var(--neon-cyan);
-            color: var(--primary-dark);
-        }
-        .message-timestamp { 
-            font-size: 0.65rem; 
-            color: #9ca3af; 
-            margin-top: 4px; 
-        }
-
-        #ai-close-chat {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        #ai-close-chat:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            transform: rotate(90deg);
-        }
-
-
-        /* Coming Soon Styles */
-        .security-coming-soon {
-            position: relative;
-            overflow: hidden;
-        }
-        .security-coming-soon > * {
-            filter: blur(6px);
-            pointer-events: none;
-            user-select: none;
-        }
-        .security-coming-soon::after {
-            content: 'بزودی...\A\Aاین بخش در حال توسعه است';
-            white-space: pre-wrap;
-            text-align: center;
-            line-height: 1.5;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 0 15px var(--neon-purple);
-            padding: 1rem 2rem;
-            background: rgba(10, 10, 26, 0.7);
-            border-radius: 1rem;
-            backdrop-filter: blur(2px);
-        }
-        
-        .icon-glow {
-           text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-        }
-
-        @media (max-width: 1024px) {
-            .toolbar-nav {
-                display: none;
-            }
-        }
-        @media (max-width: 768px) {
-            #ai-chat-modal { width: calc(100% - 40px); height: 60vh; right: 20px; bottom: 90px; }
-            .glass { padding: 1rem; }
-            .data-card { padding: 1rem; }
-        }
-    </style>
-</head>
-<body>
-    <!-- Notification Container -->
-    <div id="notificationContainer"></div>
-    
-    <!-- Toolbar -->
-    <header class="toolbar">
-        <div class="container mx-auto px-6">
-            <div class="flex items-center justify-between">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/global-location-15330742-12454602.png" alt="لوگو Verna IP" class="w-full h-full object-contain">
-                    </div>
-                    <div>
-                        <div class="text-lg font-bold text-gradient" data-lang-key="site-title">Verna IP</div>
-                        <div class="text-xs text-gray-400" data-lang-key="site-subtitle">ورنا آی‌پی</div>
-                    </div>
-                </div>
-
-                <!-- Navigation Links -->
-                <nav class="toolbar-nav hidden lg:flex items-center gap-6">
-                    <a href="#ipAnalysisSection" class="text-gray-300 hover:text-white transition-colors duration-300">بررسی IP</a>
-                    <a href="#speedTestSection" class="text-gray-300 hover:text-white transition-colors duration-300">تست سرعت</a>
-                    <a href="#newsAndArticlesSection" class="text-gray-300 hover:text-white transition-colors duration-300">اخبار و مقالات</a>
-                    <a href="#footer" class="text-gray-300 hover:text-white transition-colors duration-300">درباره ما</a>
-                </nav>
-                
-                <div class="flex items-center gap-4">
-                    <div class="lang-toggle">
-                        <div class="lang-btn active" onclick="switchLanguage('fa')" id="lang-fa">فا</div>
-                        <div class="lang-btn" onclick="switchLanguage('en')" id="lang-en">EN</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="container mx-auto px-4 md:px-6 py-8" style="margin-top: 80px;">
-        <!-- Hero Section -->
-        <div class="glass p-6 mb-6">
-            <div class="text-center">
-                <h1 class="text-3xl font-bold text-gradient text-glow mb-3" data-lang-key="main-title">
-                    Verna IP - ورنا آی‌پی
-                </h1>
-                <p class="text-base text-gray-300 max-w-3xl mx-auto" data-lang-key="main-description">
-                    بررسی و تحلیل جامع IP، تست سرعت پیشرفته، امنیت شبکه و DNS بهینه برای گیمرها و برنامه‌نویسان
-                </p>
-                <div class="flex justify-center gap-3 mt-4">
-                    <button onclick="showDisplayMessage('quick-scan')" class="btn-premium btn-display-only px-5 py-2 text-sm">
-                        <span data-lang-key="quick-scan">🚀 اسکن سریع</span>
-                    </button>
-                    <button onclick="showDisplayMessage('security-test')" class="btn-premium btn-display-only px-5 py-2 text-sm">
-                        <span data-lang-key="security-test">🔍 تست امنیت</span>
-                    </button>
-                    <button onclick="scrollToSpeedTest()" class="btn-premium px-5 py-2 text-sm">
-                        <span data-lang-key="speed-test">⚡ تست سرعت</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- IP Analysis Section -->
-        <div class="glass p-6 mb-6" id="ipAnalysisSection">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center p-1 floating">
-                     <img src="https://cdn3d.iconscout.com/3d/premium/thumb/ip-address-15654434-12723498.png" alt="آیکون بررسی آی‌پی" class="w-full h-full object-contain">
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gradient" data-lang-key="ip-analysis-title">بررسی آی‌پی</h2>
-                    <p class="text-gray-300" data-lang-key="ip-analysis-description">در این قسمت می‌توانید مشخصات آی‌پی های مورد نظرتان را بررسی نمایید.</p>
-                </div>
-            </div>
-            
-            <div class="grid lg:grid-cols-2 gap-6">
-                <!-- IP Details Table -->
-                <div class="glass-light p-4">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-3">
-                        <span class="w-6 h-6"><img src="https://cdn3d.iconscout.com/3d/premium/thumb/bar-chart-10357299-8356625.png" alt="آیکون اطلاعات تفصیلی" class="w-full h-full object-contain"></span>
-                        <span data-lang-key="ip-details">اطلاعات تفصیلی IP</span>
-                    </h3>
-                    <div class="space-y-3 bg-gray-800 bg-opacity-50 rounded-lg p-4 font-sans text-sm">
-                        <div class="flex justify-between items-center border-b border-gray-700 pb-2 cursor-pointer" onclick="copyRowValue(this)">
-                            <span class="text-gray-400">آدرس IP</span>
-                            <div class="flex items-center gap-2">
-                                <span id="ipAddress" class="font-mono text-white text-right">---</span>
-                                <span id="ipTypeBadge" class="text-xs font-bold px-2 py-0.5 rounded-full"></span>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-gray-700 pb-2 cursor-pointer" onclick="copyRowValue(this)">
-                            <span class="text-gray-400">موقعیت</span>
-                            <span id="ipLocation" class="text-white text-right">---</span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-gray-700 pb-2 cursor-pointer" onclick="copyRowValue(this)">
-                            <span class="text-gray-400">مختصات جغرافیایی</span>
-                            <span id="ipCoords" class="font-mono text-white text-right">---</span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-gray-700 pb-2 cursor-pointer" onclick="copyRowValue(this)">
-                            <span class="text-gray-400">ارائه‌دهنده خدمات (ISP)</span>
-                            <span id="ipISP" class="text-white text-right">---</span>
-                        </div>
-                         <div class="flex justify-between items-center border-b border-gray-700 pb-2 cursor-pointer" onclick="copyRowValue(this)">
-                            <span class="text-gray-400">منطقه زمانی</span>
-                            <span id="ipTimezone" class="text-white text-right">---</span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-gray-700 pb-2 cursor-pointer" onclick="copyRowValue(this)">
-                            <span class="text-gray-400">کد پستی</span>
-                            <span id="ipPostal" class="font-mono text-white text-right">---</span>
-                        </div>
-                        <div id="ipOtherInfoContainer" class="flex justify-between items-center pb-2 cursor-pointer" style="display: none;" onclick="copyRowValue(this)">
-                            <span class="text-gray-400">سایر توضیحات</span>
-                            <span id="ipOtherInfo" class="font-mono text-white text-right">---</span>
-                        </div>
-                    </div>
-                    <div class="flex gap-3 mt-4">
-                        <button onclick="refreshIP()" class="btn-premium px-4 py-2 text-sm flex-1">
-                            <span data-lang-key="refresh">🔄 تازه‌سازی</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Map -->
-                <div class="glass-light p-4">
-                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-3">
-                        <span class="text-xl">🗺️</span>
-                        <span data-lang-key="location-map">نقشه موقعیت</span>
-                    </h3>
-                    <div id="map" class="h-64 rounded-xl bg-gray-800 flex items-center justify-center">
-                        <p class="text-white text-sm" data-lang-key="map-loading">نقشه در حال بارگذاری...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Advanced Speed Test -->
-        <div class="glass p-6 mb-6" id="speedTestSection">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center p-1 floating">
-                    <img src="https://static.vecteezy.com/system/resources/thumbnails/060/118/738/small/colorful-3d-gauge-with-red-yellow-green-segments-and-a-white-indicator-needle-pointing-to-green-on-a-transparent-background-png.png" alt="آیکون تست سرعت" class="w-full h-full object-contain">
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gradient" data-lang-key="speed-test-title">تست سرعت پیشرفته - پریمیوم</h2>
-                    <p class="text-gray-300" data-lang-key="speed-test-description">اندازه‌گیری دقیق سرعت، تحلیل کیفیت و بهینه‌سازی</p>
-                </div>
-            </div>
-            
-            <div class="flex justify-center mb-6">
-                 <!-- Redesigned Speed Gauge -->
-                <div class="speed-gauge">
-                    <div class="speedometer-center"></div>
-                    <div class="speed-needle" id="speedNeedle"></div>
-                    <div class="speed-value-container">
-                        <div id="mainSpeedValue" class="speed-value">0.0</div>
-                        <div id="mainSpeedUnit" class="text-gray-400 font-mono text-sm">Mbps</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="data-card p-4 flex items-center gap-4">
-                    <div class="text-4xl text-green-400">💾</div>
-                    <div>
-                        <div class="text-gray-300 mb-1 text-sm" data-lang-key="download-speed">سرعت دانلود</div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="metric-value" id="downloadSpeed">--</div>
-                            <div id="downloadSpeedUnit" class="text-xs text-gray-500">Mbps</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="data-card p-4 flex items-center gap-4">
-                    <div class="text-4xl text-blue-400">🚀</div>
-                    <div>
-                        <div class="text-gray-300 mb-1 text-sm" data-lang-key="upload-speed">سرعت آپلود</div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="metric-value" id="uploadSpeed">--</div>
-                            <div id="uploadSpeedUnit" class="text-xs text-gray-500">Mbps</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="data-card p-4 flex items-center gap-4">
-                    <div class="text-4xl text-yellow-400">⚡</div>
-                    <div>
-                        <div class="text-gray-300 mb-1 text-sm" data-lang-key="ping">تأخیر (Ping)</div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="metric-value" id="pingValue">--</div>
-                            <div class="text-xs text-gray-500">ms</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="data-card p-4 flex items-center gap-4">
-                    <div class="text-4xl text-purple-400">💎</div>
-                    <div>
-                        <div class="text-gray-300 mb-1 text-sm" data-lang-key="connection-quality">کیفیت اتصال</div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="metric-value" id="connectionQuality">--</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            
-            <div class="text-center">
-                <button id="startSpeedTestBtn" class="btn-premium px-8 py-3 text-lg pulse-glow">
-                    <span data-lang-key="start-speed-test">🚀 شروع تست سرعت</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- DNS Selection Section -->
-        <div class="glass p-6 mb-6">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center p-1 floating">
-                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/dns-web-14058855-11293639.png" alt="آیکون DNS" class="w-full h-full object-contain">
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gradient" data-lang-key="dns-title">بهینه‌سازی DNS</h2>
-                    <p class="text-gray-300" data-lang-key="dns-description">سریع‌ترین و امن‌ترین DNS را برای اتصال خود انتخاب کنید.</p>
-                </div>
-            </div>
-            <div id="dnsListContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- DNS cards will be dynamically inserted here -->
-            </div>
-        </div>
-
-        <!-- News and Articles Section -->
-        <div class="glass p-6 mb-6" id="newsAndArticlesSection">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center p-1 floating">
-                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/news-5227993-4375922.png" alt="آیکون اخبار" class="w-full h-full object-contain">
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gradient">اخبار و مقالات</h2>
-                    <p class="text-gray-300">جدیدترین مقالات در حوزه امنیت شبکه، IP و DNS.</p>
-                </div>
-            </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="data-card p-4">
-                    <h3 class="text-lg font-bold text-white mb-2">۱۰ راهکار برای کاهش پینگ</h3>
-                    <p class="text-gray-400 text-sm mb-3">بررسی روش‌های نوین برای کاهش تأخیر و بهبود تجربه گیمینگ.</p>
-                    <a href="javascript:void(0)" onclick="showNotification('این بخش بزودی فعال می‌شود.', 'info')" class="text-neon-blue text-sm">ادامه مطلب »</a>
-                </div>
-                <div class="data-card p-4">
-                    <h3 class="text-lg font-bold text-white mb-2">چرا باید از DNS امن استفاده کنیم؟</h3>
-                    <p class="text-gray-400 text-sm mb-3">مزایای استفاده از DNS های امن مانند Cloudflare و Quad9.</p>
-                    <a href="javascript:void(0)" onclick="showNotification('این بخش بزودی فعال می‌شود.', 'info')" class="text-neon-blue text-sm">ادامه مطلب »</a>
-                </div>
-                <div class="data-card p-4">
-                    <h3 class="text-lg font-bold text-white mb-2">آینده IP: گذار به IPv6</h3>
-                    <p class="text-gray-400 text-sm mb-3">چرا IPv6 مهم است و چگونه به بهبود سرعت و امنیت کمک می‌کند.</p>
-                    <a href="javascript:void(0)" onclick="showNotification('این بخش بزودی فعال می‌شود.', 'info')" class="text-neon-blue text-sm">ادامه مطلب »</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Security Analysis -->
-        <div class="glass p-6 security-coming-soon">
-            <div class="flex items-center gap-4 mb-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center text-2xl floating">
-                    🛡️
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gradient" data-lang-key="security-test-title">تست امنیت</h2>
-                    <p class="text-gray-300 text-sm" data-lang-key="security-test-description">ابزارهای امنیتی و اسکن آسیب‌پذیری</p>
-                </div>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass-light p-4">
-                    <h3 class="text-lg font-bold text-white mb-4" data-lang-key="security-tools">ابزارهای امنیتی (نمایشی)</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="w-full btn-premium py-2 text-sm">Port Scanner</button>
-                        <button class="w-full btn-premium py-2 text-sm">تحلیل SSL/TLS</button>
-                        <button class="w-full btn-premium py-2 text-sm">Security Headers</button>
-                        <button class="w-full btn-premium py-2 text-sm">تست نفوذ</button>
-                    </div>
-                </div>
-                
-                <div class="glass-light p-4">
-                    <h3 class="text-lg font-bold text-white mb-4" data-lang-key="security-results">نتایج تست امنیت</h3>
-                    <div class="terminal" id="securityTerminal">
-                        <div class="terminal-header">
-                            <div class="terminal-btn fullscreen-btn" title="Fullscreen">⛶</div>
-                        </div>
-                        <div class="terminal-content" id="securityResults">
-                            <div class="text-center text-gray-400 mt-4">
-                                <p class="text-sm" data-lang-key="ready-security">آماده برای تست امنیت</p>
-                                <p class="text-xs mt-1" data-lang-key="select-tool">یکی از ابزارها را انتخاب کنید</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Enhanced Footer -->
-    <footer id="footer" class="glass mt-8 p-6">
-        <div class="container mx-auto text-center text-gray-400">
-            <!-- Footer Links -->
-            <div class="flex justify-center flex-wrap gap-x-6 gap-y-2 mb-4">
-                <a href="javascript:void(0)" onclick="openAIFaq()" class="hover:text-white transition-colors">سوالات متداول</a>
-                <a href="javascript:void(0)" onclick="showNotification('این بخش بزودی فعال می‌شود.', 'info')" class="hover:text-white transition-colors">قوانین</a>
-                <a href="javascript:void(0)" onclick="showNotification('این بخش بزودی فعال می‌شود.', 'info')" class="hover:text-white transition-colors">حریم خصوصی</a>
-            </div>
-            <!-- Meta Info -->
-            <div class="text-sm space-y-2 md:space-y-0 md:flex md:justify-center md:gap-8">
-                <p>توسعه دهنده: <span class="font-bold text-gray-300">تیم ورنا (Verna Team)</span></p>
-                <p>آخرین بروزرسانی: <span class="font-bold text-gray-300">مرداد ۱۴۰۳</span></p>
-            </div>
-            <!-- Copyright -->
-            <p class="text-xs text-gray-500 mt-4" data-lang-key="copyright">
-                © 2024 Verna IP. ساخته شده با ❤️ برای جامعه فناوری ایران
-            </p>
-        </div>
-    </footer>
-
-    <!-- AI Chat Assistant -->
-    <div id="ai-fab" onclick="toggleAIChat()" class="p-2">
-        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/virtual-assistant-9505136-7781237.png" alt="دستیار هوش مصنوعی" class="w-full h-full object-contain">
-    </div>
-    <div id="ai-chat-modal">
-        <div class="ai-chat-window glass">
-            <div class="ai-chat-header flex justify-between items-center">
-                <div>
-                    <h3 class="text-white font-bold">دستیار هوش مصنوعی</h3>
-                    <p class="text-xs text-gray-400">متخصص DNS، IP و سرعت</p>
-                </div>
-                <div class="flex items-center gap-2">
-                     <button id="ai-new-chat" class="faq-button !p-2 hidden" title="چت جدید">🗑️</button>
-                     <button id="ai-back-to-faq" class="faq-button !p-2 hidden">بازگشت</button>
-                     <button id="ai-close-chat" title="بستن">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                     </button>
-                </div>
-            </div>
-            
-            <!-- FAQ View -->
-            <div id="ai-faq-view">
-                <div class="p-3 border-b border-gray-700">
-                    <p class="text-xs text-center text-gray-400 mb-2">سوالات متداول:</p>
-                    <div class="grid grid-cols-2 gap-2" id="faq-modal-container">
-                        <!-- FAQ buttons for modal -->
-                    </div>
-                </div>
-                <div class="p-4">
-                    <button id="ai-start-chat" class="w-full btn-premium py-3 text-sm">
-                        💬 گفتگو با هوش مصنوعی
-                    </button>
-                </div>
-            </div>
-
-            <!-- Chat View -->
-            <div id="ai-chat-view" class="hidden flex-grow flex-col">
-                <div class="ai-chat-messages" id="aiChatMessages">
-                    <!-- Messages will appear here -->
-                </div>
-                <div id="ai-chat-limit" class="text-center text-xs text-yellow-400 py-1"></div>
-                <div class="ai-chat-input-area">
-                    <input type="text" id="aiChatInput" class="ai-chat-input" placeholder="پیام خود را بنویسید...">
-                    <button id="aiChatSendBtn" class="ai-chat-send-btn">➤</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        // Global Variables
-        let map = null;
-        let isSpeedTestRunning = false;
-        
-        // --- GEMINI API CONFIGURATION ---
-        const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; // IMPORTANT: Replace with a real key for live chat
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-        
-        // --- SPEED TEST CONFIGURATION ---
-        // List of reliable servers for download test with fallback mechanism
-        const downloadTestFiles = [
-            { url: 'https://speed.hetzner.de/10MB.bin', size: 10 * 1024 * 1024 },
-            { url: 'https://proof.ovh.net/files/10Mb.dat', size: 10 * 1024 * 1024 },
-            { url: 'https://cachefly.cachefly.net/10mb.test', size: 10 * 1024 * 1024 } 
-        ];
-
-        // Using a reliable public endpoint for upload. 2MB size for a more stable test.
-        const uploadTestEndpoints = [
-            { url: 'https://httpbin.org/post', size: 2 * 1024 * 1024 }
-        ];
-
-
-        const translations = {
-            'fa': {
-                'site-title': 'Verna IP',
-                'site-subtitle': 'ورنا آی‌پی',
-                'main-title': 'Verna IP - ورنا آی‌پی',
-                'main-description': 'بررسی و تحلیل جامع IP، تست سرعت پیشرفته، امنیت شبکه و DNS بهینه برای گیمرها و برنامه‌نویسان',
-                'quick-scan': '🚀 اسکن سریع',
-                'security-test': '🔍 تست امنیت',
-                'speed-test': '⚡ تست سرعت',
-                'ip-analysis-title': 'بررسی آی‌پی',
-                'ip-analysis-description': 'در این قسمت می‌توانید مشخصات آی‌پی های مورد نظرتان را بررسی نمایید.',
-                'ip-details': 'اطلاعات تفصیلی IP',
-                'copy-all': '📋 کپی تمامی اطلاعات',
-                'refresh': '🔄 تازه‌سازی',
-                'location-map': 'نقشه موقعیت',
-                'map-loading': 'نقشه در حال بارگذاری...',
-                'speed-test-title': 'تست سرعت پیشرفته - پریمیوم',
-                'speed-test-description': 'اندازه‌گیری دقیق سرعت، تحلیل کیفیت و بهینه‌سازی',
-                'download-speed': 'سرعت دانلود',
-                'upload-speed': 'سرعت آپلود',
-                'ping': 'تأخیر (Ping)',
-                'connection-quality': 'کیفیت اتصال',
-                'ready-test': 'آماده تست',
-                'start-speed-test': '🚀 شروع تست سرعت',
-                'dns-title': 'بهینه‌سازی DNS',
-                'dns-description': 'سریع‌ترین و امن‌ترین DNS را برای اتصال خود انتخاب کنید.',
-                'security-test-title': 'تست امنیت',
-                'security-test-description': 'ابزارهای امنیتی و اسکن آسیب‌پذیری',
-                'security-tools': 'ابزارهای امنیتی (نمایشی)',
-                'security-results': 'نتایج تست امنیت',
-                'ready-security': 'آماده برای تست امنیت',
-                'select-tool': 'یکی از ابزارها را انتخاب کنید',
-                'copyright': '© 2024 Verna IP. ساخته شده با ❤️ برای جامعه فناوری ایران'
-            },
-            'en': {
-                'site-title': 'Verna IP',
-                'site-subtitle': 'Verna IP',
-                'main-title': 'Verna IP',
-                'main-description': 'Comprehensive IP analysis, advanced speed testing, network security and optimized DNS for gamers and developers',
-                'quick-scan': '🚀 Quick Scan',
-                'security-test': '🔍 Security Test',
-                'speed-test': '⚡ Speed Test',
-                'ip-analysis-title': 'IP Analysis',
-                'ip-analysis-description': 'Check the specifications of your desired IPs.',
-                'ip-details': 'Detailed IP Information',
-                'copy-all': '📋 Copy All Information',
-                'refresh': '🔄 Refresh',
-                'location-map': 'Location Map',
-                'map-loading': 'Map is loading...',
-                'speed-test-title': 'Advanced Speed Test - Premium',
-                'speed-test-description': 'Accurate speed measurement, quality analysis and optimization',
-                'download-speed': 'Download Speed',
-                'upload-speed': 'Upload Speed',
-                'ping': 'Ping (Latency)',
-                'connection-quality': 'Connection Quality',
-                'ready-test': 'Ready to Test',
-                'start-speed-test': '🚀 Start Speed Test',
-                'dns-title': 'DNS Optimization',
-                'dns-description': 'Choose the fastest and most secure DNS for your connection.',
-                'security-test-title': 'Security Test',
-                'security-test-description': 'Security tools and vulnerability scanning (Demo)',
-                'security-tools': 'Security Tools (Demo)',
-                'security-results': 'Security Test Results',
-                'ready-security': 'Ready for security test',
-                'select-tool': 'Select one of the tools',
-                'copyright': '© 2024 Verna IP. Made with ❤️ for Iran Tech Community'
-            }
-        };
-        const dnsServers = {
-            'cloudflare': { 
-                name: '🚀 Cloudflare (گیمرها)', 
-                primary: '1.1.1.1', 
-                secondary: '1.0.0.1',
-                description: 'سریع‌ترین DNS عمومی جهان، ایده‌آل برای کاهش پینگ در بازی‌ها.'
-            },
-            'google': { 
-                name: '💻 Google (برنامه‌نویسان)', 
-                primary: '8.8.8.8', 
-                secondary: '8.8.4.4',
-                description: 'DNS قابل اعتماد و پایدار از گوگل، مناسب برای توسعه‌دهندگان.'
-            },
-            'shecan': { 
-                name: '🇮🇷 شکن (تحریم‌گذر)', 
-                primary: '178.22.122.100', 
-                secondary: '185.51.200.2',
-                description: 'DNS ایرانی برای عبور از تحریم‌های تکنولوژی علیه ایران.'
-            },
-            'opendns': {
-                name: '🛡️ OpenDNS (امنیت)',
-                primary: '208.67.222.222',
-                secondary: '208.67.220.220',
-                description: 'DNS با تمرکز بر امنیت و دارای فیلترهای محافظتی در برابر سایت‌های مخرب.'
-            },
-            'quad9': {
-                name: '🔒 Quad9 (حریم خصوصی)',
-                primary: '9.9.9.9',
-                secondary: '149.112.112.112',
-                description: 'محافظت در برابر تهدیدات امنیتی و حفظ حریم خصوصی کاربران.'
-            },
-             'electro': {
-                name: '⚡️ Electro (تحریم‌گذر)',
-                primary: '78.157.42.100',
-                secondary: '78.157.42.101',
-                description: 'سرویس DNS ایرانی دیگر برای دور زدن تحریم‌ها و دسترسی به سایت‌ها.'
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', initializeApp);
-
-        function initializeApp() {
-            showNotification('خوش آمدید به Verna IP! 👑', 'success');
-            loadUserIP();
-            initializeMap();
-            populateDNSList();
-            setupAIHandlers();
-            
-            document.getElementById('startSpeedTestBtn').addEventListener('click', startRealSpeedTest);
-            const savedLang = localStorage.getItem('netsecure-lang') || 'fa';
-            switchLanguage(savedLang);
-        }
-        
-        function switchLanguage(lang) {
-            localStorage.setItem('netsecure-lang', lang);
-            document.getElementById('lang-fa').classList.toggle('active', lang === 'fa');
-            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
-            
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                if (translations[lang] && translations[lang][key]) {
-                    el.textContent = translations[lang][key];
-                }
-            });
-        }
-        
-        function showDisplayMessage(type) {
-            const messages = {
-                'quick-scan': 'این دکمه نمایشی است. برای اسکن واقعی از بخش امنیت استفاده کنید.',
-                'security-test': 'این دکمه نمایشی است. از ابزارهای امنیتی در پایین صفحه استفاده کنید.'
-            };
-            showNotification(messages[type], 'info');
-        }
-        
-        function scrollToSpeedTest() {
-            document.getElementById('speedTestSection').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        async function fetchWithFallback(urls) {
-            for (const url of urls) {
-                try {
-                    const response = await fetch(url, { headers: { 'Accept': 'application/json' }});
-                    if (!response.ok) throw new Error(`Status ${response.status}`);
-                    return await response.json();
-                } catch (error) {
-                    console.warn(`Failed from ${url}:`, error.message);
-                }
-            }
-            throw new Error('All IP fetch attempts failed.');
-        }
-
-        async function loadUserIP() {
-            const ipApiUrls = [
-                'https://ip-api.com/json/?fields=status,message,country,regionName,city,lat,lon,timezone,isp,org,query,postal',
-                'https://ipinfo.io/json',
-                'https://ipapi.co/json/'
-            ];
-            
-            const ipOtherInfoContainer = document.getElementById('ipOtherInfoContainer');
-            const ipOtherInfo = document.getElementById('ipOtherInfo');
-            
-            try {
-                const data = await fetchWithFallback(ipApiUrls);
-                
-                const ipAddress = data.query || data.ip || '---';
-                document.getElementById('ipAddress').textContent = ipAddress;
-                
-                const ipTypeBadge = document.getElementById('ipTypeBadge');
-                if (ipAddress.includes(':')) {
-                    ipTypeBadge.textContent = 'IPv6';
-                    ipTypeBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-full bg-blue-500 text-white';
-                    
-                    ipOtherInfoContainer.style.display = 'flex';
-                    ipOtherInfo.textContent = 'IPv4: در حال دریافت...';
-                    try {
-                        const ipv4Res = await fetch('https://api.ipify.org?format=json');
-                        if (!ipv4Res.ok) throw new Error('IPv4 fetch failed');
-                        const ipv4Data = await ipv4Res.json();
-                        ipOtherInfo.textContent = `IPv4: ${ipv4Data.ip}`;
-                    } catch (e) {
-                        console.warn("Could not fetch IPv4 address:", e);
-                        ipOtherInfo.textContent = 'IPv4: در دسترس نیست';
-                    }
-
-                } else {
-                    ipTypeBadge.textContent = 'IPv4';
-                    ipTypeBadge.className = 'text-xs font-bold px-2 py-0.5 rounded-full bg-green-500 text-white';
-                    ipOtherInfoContainer.style.display = 'none';
-                }
-
-                document.getElementById('ipLocation').textContent = `${data.city || ''}, ${data.regionName || data.region || ''}, ${data.country || data.country_name || ''}`;
-                document.getElementById('ipCoords').textContent = data.lat && data.lon ? `${data.lat}, ${data.lon}` : (data.latitude && data.longitude ? `${data.latitude}, ${data.longitude}` : '---');
-                
-                const isp = data.isp || '---';
-                const org = data.org || '';
-                let combinedIsp = isp;
-                if (org && org !== isp) {
-                    combinedIsp += ` (${org})`;
-                }
-                document.getElementById('ipISP').textContent = combinedIsp;
-
-                document.getElementById('ipTimezone').textContent = data.timezone || '---';
-                document.getElementById('ipPostal').textContent = data.postal || data.postal_code || '---';
-                
-                const lat = data.lat || data.latitude;
-                const lon = data.lon || data.longitude;
-                if (map && lat && lon) {
-                    map.setView([lat, lon], 10);
-                    L.marker([lat, lon]).addTo(map).bindPopup(`موقعیت شما: ${data.city}`).openPopup();
-                }
-                showNotification(`IP شما: ${ipAddress}`, 'info');
-
-            } catch (error) {
-                console.error('Error loading IP:', error);
-                showNotification('خطا در بارگذاری اطلاعات IP', 'error');
-            }
-        }
-        
-        function copyRowValue(element) {
-            const valueSpan = element.querySelector('span:last-child');
-            if (valueSpan) {
-                const value = valueSpan.textContent.trim();
-                if (value && value !== '---') {
-                    navigator.clipboard.writeText(value)
-                        .then(() => showNotification(`کپی شد: ${value}`, 'success'))
-                        .catch(err => showNotification('خطا در کپی کردن', 'error'));
-                }
-            }
-        }
-
-        function refreshIP() {
-            loadUserIP();
-            showNotification('اطلاعات IP به‌روزرسانی شد', 'success');
-        }
-
-        function initializeMap() {
-            if (document.getElementById('map')._leaflet_id) return;
-            map = L.map('map').setView([35.6892, 51.3890], 5);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        }
-        
-        // --- Improved Speed Test Functions ---
-
-        function formatSpeed(speedMbps) {
-            if (speedMbps < 1 && speedMbps > 0) {
-                return { value: (speedMbps * 1000).toFixed(0), unit: 'Kbps' };
-            }
-            return { value: speedMbps.toFixed(2), unit: 'Mbps' };
-        }
-
-        function updateSpeedNeedle(speedMbps) {
-            const needle = document.getElementById('speedNeedle');
-            const maxSpeed = 50; // Max speed on the gauge in Mbps
-            const clampedSpeed = Math.min(speedMbps, maxSpeed);
-            const angle = -135 + (clampedSpeed / maxSpeed) * 270;
-            needle.style.transform = `translateX(-50%) rotate(${angle}deg)`;
-            
-            const formatted = formatSpeed(speedMbps);
-            document.getElementById('mainSpeedValue').textContent = formatted.value;
-            document.getElementById('mainSpeedUnit').textContent = formatted.unit;
-        }
-        
-        async function startRealSpeedTest() {
-            if (isSpeedTestRunning) return;
-            isSpeedTestRunning = true;
-            const startButton = document.getElementById('startSpeedTestBtn');
-            startButton.disabled = true;
-            startButton.querySelector('span').textContent = 'در حال تست...';
-            
-            resetSpeedTestUI();
-            
-            // 1. Measure Ping
-            const ping = await measurePing();
-            document.getElementById('pingValue').textContent = Math.round(ping);
-
-            // 2. Measure Download
-            const downloadSpeedMbps = await measureDownloadSpeed(updateSpeedNeedle);
-            const formattedDownload = formatSpeed(downloadSpeedMbps);
-            document.getElementById('downloadSpeed').textContent = formattedDownload.value;
-            document.getElementById('downloadSpeedUnit').textContent = formattedDownload.unit;
-            updateSpeedNeedle(0); // Reset needle after download
-
-            // 3. Measure Upload
-            const uploadSpeedMbps = await measureUploadSpeed();
-            const formattedUpload = formatSpeed(uploadSpeedMbps);
-            document.getElementById('uploadSpeed').textContent = formattedUpload.value;
-            document.getElementById('uploadSpeedUnit').textContent = formattedUpload.unit;
-
-            // 4. Assess Quality
-            const quality = assessConnectionQuality(downloadSpeedMbps, uploadSpeedMbps, ping);
-            document.getElementById('connectionQuality').textContent = quality;
-
-            showNotification('تست سرعت کامل شد!', 'success');
-            isSpeedTestRunning = false;
-            startButton.disabled = false;
-            switchLanguage(localStorage.getItem('netsecure-lang') || 'fa');
-        }
-
-        function resetSpeedTestUI() {
-            ['downloadSpeed', 'uploadSpeed', 'pingValue', 'connectionQuality'].forEach(id => {
-                document.getElementById(id).textContent = '--';
-            });
-            ['downloadSpeedUnit', 'uploadSpeedUnit', 'mainSpeedUnit'].forEach(id => {
-                 document.getElementById(id).textContent = 'Mbps';
-            });
-            updateSpeedNeedle(0);
-        }
-        
-        async function measurePing() {
-            // Using reliable endpoints for ping test
-            const urls = ['https://www.google.com/favicon.ico', 'https://www.cloudflare.com/favicon.ico'];
-            let totalTime = 0;
-            for (const url of urls) {
-                const startTime = performance.now();
-                try { 
-                    await fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-cache' }); 
-                } catch (e) {
-                    // Ignore errors as no-cors requests can sometimes throw them
-                }
-                totalTime += performance.now() - startTime;
-            }
-            return totalTime / urls.length;
-        }
-
-        async function measureDownloadSpeed(onProgress) {
-            for (const file of downloadTestFiles) {
-                try {
-                    const startTime = performance.now();
-                    const response = await fetch(file.url, { cache: 'no-store' });
-                    const reader = response.body.getReader();
-                    let receivedLength = 0;
-                    
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-                        receivedLength += value.length;
-                        const elapsedTime = (performance.now() - startTime) / 1000;
-                        if (elapsedTime > 0) {
-                            const speedMbps = (receivedLength * 8) / (elapsedTime * 1000 * 1000);
-                            onProgress(speedMbps);
-                        }
-                    }
-                    
-                    const totalDuration = (performance.now() - startTime) / 1000;
-                    // Using the file's known size for a more accurate final calculation
-                    return (file.size * 8) / (totalDuration * 1000 * 1000);
-                } catch (e) {
-                    console.warn(`Download test failed for ${file.url}. Trying next server...`, e);
-                }
-            }
-            showNotification('خطا در تست دانلود. لطفا دوباره تلاش کنید.', 'error');
-            return 0; // Return 0 if all servers fail
-        }
-        
-        async function measureUploadSpeed() {
-             for (const server of uploadTestEndpoints) {
-                try {
-                    const data = new Blob([new ArrayBuffer(server.size)], { type: 'application/octet-stream' });
-                    const startTime = performance.now();
-                    await fetch(server.url, { method: 'POST', body: data });
-                    const duration = (performance.now() - startTime) / 1000;
-                    return (server.size * 8) / (duration * 1000 * 1000);
-                } catch (e) {
-                    console.warn(`Upload test failed for ${server.url}.`, e);
-                }
-             }
-             showNotification('خطا در تست آپلود. لطفا دوباره تلاش کنید.', 'error');
-             return 0;
-        }
-        
-        function assessConnectionQuality(dl, ul, ping) {
-            if (dl > 25 && ping < 30) return 'عالی';
-            if (dl > 10 && ping < 60) return 'خوب';
-            if (dl > 2 && ping < 120) return 'متوسط';
-            return 'ضعیف';
-        }
-        
-        function populateDNSList() {
-            const container = document.getElementById('dnsListContainer');
-            if (!container) return;
-            container.innerHTML = Object.values(dnsServers).map(dns => `
-                <div class="dns-card">
-                    <h3 class="text-xl font-bold text-gradient mb-2">${dns.name}</h3>
-                    <p class="text-gray-300 text-sm mb-4 h-16">${dns.description}</p>
-                    <div class="space-y-3 font-mono text-sm">
-                        <div class="flex items-center justify-between bg-gray-800 bg-opacity-50 p-2 rounded-lg">
-                            <span>Primary:</span> <span class="text-white">${dns.primary}</span>
-                            <button class="dns-copy-btn" onclick="copyToClipboard('${dns.primary}', 'Primary DNS')">کپی</button>
-                        </div>
-                        <div class="flex items-center justify-between bg-gray-800 bg-opacity-50 p-2 rounded-lg">
-                            <span>Secondary:</span> <span class="text-white">${dns.secondary}</span>
-                            <button class="dns-copy-btn" onclick="copyToClipboard('${dns.secondary}', 'Secondary DNS')">کپی</button>
-                        </div>
-                    </div>
-                </div>`).join('');
-        }
-
-        function copyToClipboard(text, type) {
-            navigator.clipboard.writeText(text).then(() => showNotification(`${type} کپی شد: ${text}`, 'success'));
-        }
-        
-        function showNotification(message, type = 'info') {
-            const container = document.getElementById('notificationContainer');
-            const notif = document.createElement('div');
-            notif.className = `notification ${type}`;
-            notif.textContent = message;
-            container.appendChild(notif);
-            setTimeout(() => notif.classList.add('show'), 10);
-            setTimeout(() => { notif.classList.remove('show'); setTimeout(() => notif.remove(), 5000); }, 5000);
-        }
-
-        // --- AI CHAT FUNCTIONS ---
-        const AI_DAILY_LIMIT = 10;
-        const aiKnowledgeBase = {
-            "IP چیست؟": "آدرس IP یک شماره شناسایی منحصربه‌فرد برای هر دستگاه در شبکه اینترنت است. این آدرس به دستگاه‌ها اجازه می‌دهد با یکدیگر ارتباط برقرار کرده و داده‌ها را به مقصد صحیح ارسال کنند. دو نوع اصلی آن IPv4 و IPv6 است.",
-            "DNS چیست؟": "DNS یا Domain Name System، سیستمی است که نام دامنه (مثل google.com) را به آدرس IP عددی ترجمه می‌کند. در واقع مثل دفترچه تلفن برای اینترنت عمل می‌کند.",
-            "بهترین DNS کدام است؟": "بهترین DNS به نیاز شما بستگی دارد. Cloudflare (1.1.1.1) برای گیمینگ و سرعت بالا، Google DNS (8.8.8.8) برای پایداری، و DNS های ایرانی مانند شکن برای عبور از تحریم‌ها مناسب هستند.",
-            "پینگ چیست؟": "پینگ (Ping) یا تأخیر (Latency)، مدت زمانی است که طول می‌کشد یک بسته داده از دستگاه شما به سرور برود و برگردد. واحد آن میلی‌ثانیه است و هرچه کمتر باشد، ارتباط بهتری (مخصوصا برای بازی آنلاین) خواهید داشت.",
-            "چطور پینگ را کاهش دهم؟": "برای کاهش پینگ، از اتصال با کابل شبکه (LAN) به جای Wi-Fi استفاده کنید، برنامه‌های پس‌زمینه که اینترنت مصرف می‌کنند را ببندید و از DNS های سریع مانند Cloudflare یا Google استفاده کنید.",
-            "افزایش سرعت اینترنت": "برای بهبود سرعت، مودم را ری‌استارت کنید، از کابل شبکه (LAN) به جای وای‌فای استفاده کنید، DNS خود را به یک سرور سریع (مثل Cloudflare) تغییر دهید و در نهایت با پشتیبانی سرویس‌دهنده اینترنت خود تماس بگیرید.",
-            "تفاوت IPv4 و IPv6": "IPv4 نسخه قدیمی‌تر آدرس‌دهی با حدود ۴ میلیارد آدرس است که رو به اتمام است. IPv6 نسخه جدید با تعداد تقریباً نامحدودی آدرس است که امنیت بهتر و کارایی بالاتری دارد و آینده اینترنت را تضمین می‌کند.",
-            "چطور IP را مخفی کنم؟": "بهترین و امن‌ترین راه برای مخفی کردن IP استفاده از سرویس‌های VPN است. VPN تمام ترافیک اینترنت شما را رمزنگاری کرده و از طریق سرور خود در کشوری دیگر مسیریابی می‌کند و به این ترتیب IP واقعی شما را مخفی نگه می‌دارد."
-        };
-
-        function setupAIHandlers() {
-            const faqModalContainer = document.getElementById('faq-modal-container');
-            
-            const faqHtml = Object.keys(aiKnowledgeBase).map(q => `<button class="faq-button">${q}</button>`).join('');
-            faqModalContainer.innerHTML = faqHtml;
-            
-            document.querySelectorAll('#faq-modal-container .faq-button').forEach(btn => btn.onclick = () => { handleFAQClick(btn.textContent); });
-            document.getElementById('ai-start-chat').onclick = () => showNotification('این بخش در حال توسعه است و بزودی فعال می‌شود.', 'info');
-            document.getElementById('ai-back-to-faq').onclick = showFaqView;
-            document.getElementById('ai-close-chat').onclick = toggleAIChat;
-            document.getElementById('aiChatSendBtn').onclick = sendChatMessage;
-            document.getElementById('aiChatInput').onkeypress = (e) => { if (e.key === 'Enter') sendChatMessage(); };
-            document.getElementById('ai-new-chat').onclick = clearChatHistory;
-        }
-        
-        function saveChatHistory() {
-            const messagesContainer = document.getElementById('aiChatMessages');
-            const messages = [];
-            messagesContainer.querySelectorAll('.ai-message').forEach(msgDiv => {
-                const text = msgDiv.querySelector('p').textContent;
-                const sender = msgDiv.classList.contains('user-message') ? 'user' : 'bot';
-                if (text !== "در حال تفکر...") {
-                    messages.push({ text, sender });
-                }
-            });
-            localStorage.setItem('aiChatHistory', JSON.stringify(messages));
-        }
-
-        function loadChatHistory() {
-            const messagesContainer = document.getElementById('aiChatMessages');
-            messagesContainer.innerHTML = '';
-            const history = JSON.parse(localStorage.getItem('aiChatHistory') || 'null');
-
-            if (history && history.length > 0) {
-                history.forEach(msg => addMessageToChat(msg.text, msg.sender));
-            } else {
-                addMessageToChat("سلام! چطور میتونم کمکتون کنم؟ (در حال حاضر فقط پاسخ به سوالات متداول فعال است)", 'bot');
-            }
-        }
-        
-        function clearChatHistory() {
-            localStorage.removeItem('aiChatHistory');
-            loadChatHistory();
-            showNotification('تاریخچه چت پاک شد.', 'info');
-        }
-
-        function showFaqView() {
-            document.getElementById('ai-faq-view').classList.remove('hidden');
-            document.getElementById('ai-chat-view').classList.add('hidden');
-            document.getElementById('ai-back-to-faq').classList.add('hidden');
-            document.getElementById('ai-new-chat').classList.add('hidden');
-        }
-
-        function showChatView(isFaqClick) {
-            document.getElementById('ai-faq-view').classList.add('hidden');
-            document.getElementById('ai-chat-view').classList.remove('hidden');
-            document.getElementById('ai-back-to-faq').classList.remove('hidden');
-            document.getElementById('ai-new-chat').classList.remove('hidden');
-
-            if (isFaqClick) {
-                 localStorage.removeItem('aiChatHistory');
-                 document.getElementById('aiChatMessages').innerHTML = '';
-            } else {
-                loadChatHistory();
-            }
-            updateMessageLimitDisplay();
-        }
-        
-        function openAIFaq() {
-            const modal = document.getElementById('ai-chat-modal');
-            const fab = document.getElementById('ai-fab');
-            modal.classList.add('visible');
-            fab.classList.add('hidden');
-            showFaqView();
-        }
-
-
-        function toggleAIChat() {
-            const modal = document.getElementById('ai-chat-modal');
-            const fab = document.getElementById('ai-fab');
-            const isVisible = modal.classList.contains('visible');
-
-            if (isVisible) {
-                modal.classList.remove('visible');
-                fab.classList.remove('hidden');
-            } else {
-                modal.classList.add('visible');
-                fab.classList.add('hidden');
-                showFaqView();
-            }
-        }
-        
-        function handleFAQClick(question) {
-            if (!document.getElementById('ai-chat-modal').classList.contains('visible')) {
-                toggleAIChat();
-            }
-            showChatView(true);
-            addMessageToChat(question, 'user');
-            setTimeout(() => {
-                addMessageToChat(aiKnowledgeBase[question], 'bot');
-                saveChatHistory();
-            }, 300);
-        }
-        
-        function getTodayAIUsage() {
-            const usage = JSON.parse(localStorage.getItem('aiUsage') || '{}');
-            const today = new Date().toISOString().split('T')[0];
-            return (usage.date !== today) ? { date: today, count: 0 } : usage;
-        }
-
-        function updateAIUsage() {
-            const usage = getTodayAIUsage();
-            usage.count++;
-            localStorage.setItem('aiUsage', JSON.stringify(usage));
-        }
-
-        function updateMessageLimitDisplay() {
-            const remaining = AI_DAILY_LIMIT - getTodayAIUsage().count;
-            document.getElementById('ai-chat-limit').textContent = `شما ${Math.max(0, remaining)} پیام دیگر امروز می‌توانید ارسال کنید.`;
-        }
-
-        async function sendChatMessage() {
-            showNotification('گفتگو با هوش مصنوعی در حال توسعه است.', 'info');
-            return; // Functionality disabled as per request
-        }
-
-        function addMessageToChat(text, sender) {
-            const messagesContainer = document.getElementById('aiChatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `ai-message ${sender}-message`;
-            
-            const textNode = document.createElement('p');
-            textNode.textContent = text;
-            
-            const timeNode = document.createElement('div');
-            timeNode.className = 'message-timestamp';
-            timeNode.textContent = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-            
-            messageDiv.appendChild(textNode);
-            messageDiv.appendChild(timeNode);
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function updateLastBotMessage(text) {
-            const lastMessage = document.querySelector('#aiChatMessages .bot-message:last-child p');
-            if (lastMessage) {
-                lastMessage.textContent = text;
-            }
-            saveChatHistory();
-        }
-
-    </script>
-</body>
-</html>

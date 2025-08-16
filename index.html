@@ -837,7 +837,7 @@
                     <img src="https://static.vecteezy.com/system/resources/thumbnails/060/118/738/small/colorful-3d-gauge-with-red-yellow-green-segments-and-a-white-indicator-needle-pointing-to-green-on-a-transparent-background-png.png" alt="آیکون تست سرعت" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gradient" data-lang-key="speed-test-title">تست سرعت پیشرفته - پریمیوم</h2>
+                    <h2 class="text-2xl font-bold text-gradient" data-lang-key="speed-test-title">تست سرعت پیشرفته</h2>
                     <p class="text-gray-300" data-lang-key="speed-test-description">اندازه‌گیری دقیق سرعت، تحلیل کیفیت و بهینه‌سازی</p>
                 </div>
             </div>
@@ -1003,11 +1003,11 @@
             <!-- Meta Info -->
             <div class="text-sm space-y-2 md:space-y-0 md:flex md:justify-center md:gap-8">
                 <p>توسعه دهنده: <span class="font-bold text-gray-300">تیم ورنا (Verna Team)</span></p>
-                <p>آخرین بروزرسانی: <span class="font-bold text-gray-300">مرداد ۱۴۰۳</span></p>
+                <p>آخرین بروزرسانی: <span class="font-bold text-gray-300">مرداد ۱۴۰۴</span></p>
             </div>
             <!-- Copyright -->
             <p class="text-xs text-gray-500 mt-4" data-lang-key="copyright">
-                © 2024 Verna IP. ساخته شده با ❤️ برای جامعه فناوری ایران
+                © 2025 Verna IP. ساخته شده با ❤️ برای جامعه فناوری ایران
             </p>
         </div>
     </footer>
@@ -1024,7 +1024,7 @@
                     <p class="text-xs text-gray-400">متخصص DNS، IP و سرعت</p>
                 </div>
                 <div class="flex items-center gap-2">
-                     <button id="ai-new-chat" class="faq-button !p-2 hidden" title="چت جدید">🗑️</button>
+                    <!-- <button id="ai-new-chat" class="faq-button !p-2 hidden" title="چت جدید">🗑️</button> -->
                      <button id="ai-back-to-faq" class="faq-button !p-2 hidden">بازگشت</button>
                      <button id="ai-close-chat" title="بستن">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -1067,10 +1067,10 @@
         let map = null;
         let isSpeedTestRunning = false;
         
-        // --- GEMINI API CONFIGURATION ---
+         // --- GEMINI API CONFIGURATION ---
         const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; // IMPORTANT: Replace with a real key for live chat
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-        
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`; 
+       
         // --- SPEED TEST CONFIGURATION ---
         // List of reliable servers for download test with fallback mechanism
         const downloadTestFiles = [
@@ -1113,11 +1113,11 @@
                 'dns-description': 'سریع‌ترین و امن‌ترین DNS را برای اتصال خود انتخاب کنید.',
                 'security-test-title': 'تست امنیت',
                 'security-test-description': 'ابزارهای امنیتی و اسکن آسیب‌پذیری',
-                'security-tools': 'ابزارهای امنیتی (نمایشی)',
+                'security-tools': 'ابزارهای امنیتی)',
                 'security-results': 'نتایج تست امنیت',
                 'ready-security': 'آماده برای تست امنیت',
                 'select-tool': 'یکی از ابزارها را انتخاب کنید',
-                'copyright': '© 2024 Verna IP. ساخته شده با ❤️ برای جامعه فناوری ایران'
+                'copyright': '© 2025 Verna IP. ساخته شده با ❤️ برای جامعه فناوری ایران'
             },
             'en': {
                 'site-title': 'Verna IP',
@@ -1145,12 +1145,12 @@
                 'dns-title': 'DNS Optimization',
                 'dns-description': 'Choose the fastest and most secure DNS for your connection.',
                 'security-test-title': 'Security Test',
-                'security-test-description': 'Security tools and vulnerability scanning (Demo)',
-                'security-tools': 'Security Tools (Demo)',
+                'security-test-description': 'Security tools and vulnerability scanning',
+                'security-tools': 'Security Tools',
                 'security-results': 'Security Test Results',
                 'ready-security': 'Ready for security test',
                 'select-tool': 'Select one of the tools',
-                'copyright': '© 2024 Verna IP. Made with ❤️ for Iran Tech Community'
+                'copyright': '© 2025 Verna IP. Made with ❤️ for Iran Tech Community'
             }
         };
         const dnsServers = {
@@ -1223,8 +1223,8 @@
         
         function showDisplayMessage(type) {
             const messages = {
-                'quick-scan': 'این دکمه نمایشی است. برای اسکن واقعی از بخش امنیت استفاده کنید.',
-                'security-test': 'این دکمه نمایشی است. از ابزارهای امنیتی در پایین صفحه استفاده کنید.'
+                'quick-scan': 'برای اسکن از بخش امنیت استفاده کنید.',
+                'security-test': 'از ابزارهای امنیتی در پایین صفحه استفاده کنید.'
             };
             showNotification(messages[type], 'info');
         }
@@ -1559,11 +1559,11 @@
             }
         }
         
-        function clearChatHistory() {
-            localStorage.removeItem('aiChatHistory');
-            loadChatHistory();
-            showNotification('تاریخچه چت پاک شد.', 'info');
-        }
+       // function clearChatHistory() {
+           // localStorage.removeItem('aiChatHistory');
+           // loadChatHistory();
+           // showNotification('تاریخچه چت پاک شد.', 'info');//
+        }//
 
         function showFaqView() {
             document.getElementById('ai-faq-view').classList.remove('hidden');
@@ -1635,9 +1635,9 @@
             localStorage.setItem('aiUsage', JSON.stringify(usage));
         }
 
-        function updateMessageLimitDisplay() {
-            const remaining = AI_DAILY_LIMIT - getTodayAIUsage().count;
-            document.getElementById('ai-chat-limit').textContent = `شما ${Math.max(0, remaining)} پیام دیگر امروز می‌توانید ارسال کنید.`;
+       // function updateMessageLimitDisplay() {
+           // const remaining = AI_DAILY_LIMIT - getTodayAIUsage().count;
+           // document.getElementById('ai-chat-limit').textContent = `شما ${Math.max(0, remaining)} پیام دیگر امروز می‌توانید ارسال کنید.`;
         }
 
         async function sendChatMessage() {

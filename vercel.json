@@ -8,7 +8,7 @@
           "value": "nigarip.vercel.app"
         }
       ],
-      "destination": "https://nigarip.vercel.app/:path*",
+      "destination": "http://nigarip.site/:path*",
       "permanent": true
     }
   ]

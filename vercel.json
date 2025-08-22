@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "nigarip.vercel.app"
+        }
+      ],
+      "destination": "https://nigarip.vercel.app/:path*",
+      "permanent": true
+    }
+  ]
+}

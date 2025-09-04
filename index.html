@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <meta name="google-site-verification" content="uFczkiyCT4PIkplPK7QY1VHqUcDeArDAc9fzOLLa5Fw" />
+    <meta name="google-site-verification" content="oyGn4TtQj7aIFoOjMlbPY-4hjqiHFUCNcMOIV9G1MZA" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
         
@@ -708,14 +708,8 @@
             .data-card { padding: 1rem; }
         }
     </style>
-
-
-<head>
-    <meta name="google-site-verification" content="uFczkiyCT4PIkplPK7QY1VHqUcDeArDAc9fzOLLa5Fw" />
-    <!-- سایر متا تگ‌ها و لینک‌ها -->
 </head>
-
-
+<body>
     <div id="notificationContainer"></div>
     
     <header class="toolbar">
@@ -764,7 +758,7 @@
                     <button onclick="showDisplayMessage('security-test')" class="btn-premium btn-display-only px-5 py-2 text-sm">
                         <span data-lang-key="security-test">🔍 تست امنیت</span>
                     </button>
-                    <button onclick="scrollToSpeedTest()" class="btn-premium px-5 py-2 text-sm">
+                    <button onclick="showNotification('این بخش بزودی فعال می‌شود.', 'info')" class="btn-premium btn-display-only px-5 py-2 text-sm">
                         <span data-lang-key="speed-test">⚡ تست سرعت</span>
                     </button>
                 </div>
@@ -840,78 +834,6 @@
             </div>
         </div>
 
-        <div class="glass p-6 mb-6" id="speedTestSection">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center p-1 floating">
-                    <img src="https://static.vecteezy.com/system/resources/thumbnails/060/118/738/small/colorful-3d-gauge-with-red-yellow-green-segments-and-a-white-indicator-needle-pointing-to-green-on-a-transparent-background-png.png" alt="آیکون تست سرعت" class="w-full h-full object-contain">
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gradient" data-lang-key="speed-test-title">تست سرعت پیشرفته</h2>
-                    <p class="text-gray-300" data-lang-key="speed-test-description">اندازه‌گیری دقیق سرعت، تحلیل کیفیت و بهینه‌سازی</p>
-                </div>
-            </div>
-            
-            <div class="flex justify-center mb-6">
-                <div class="speed-gauge">
-                    <div class="speedometer-center"></div>
-                    <div class="speed-needle" id="speedNeedle"></div>
-                    <div class="speed-value-container">
-                        <div id="mainSpeedValue" class="speed-value">0.0</div>
-                        <div id="mainSpeedUnit" class="text-gray-400 font-mono text-sm">Mbps</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="data-card p-4 flex items-center gap-4">
-                    <div class="text-4xl text-green-400">💾</div>
-                    <div>
-                        <div class="text-gray-300 mb-1 text-sm" data-lang-key="download-speed">سرعت دانلود</div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="metric-value" id="downloadSpeed">--</div>
-                            <div id="downloadSpeedUnit" class="text-xs text-gray-500">Mbps</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="data-card p-4 flex items-center gap-4">
-                    <div class="text-4xl text-blue-400">🚀</div>
-                    <div>
-                        <div class="text-gray-300 mb-1 text-sm" data-lang-key="upload-speed">سرعت آپلود</div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="metric-value" id="uploadSpeed">--</div>
-                            <div id="uploadSpeedUnit" class="text-xs text-gray-500">Mbps</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="data-card p-4 flex items-center gap-4">
-                    <div class="text-4xl text-yellow-400">⚡</div>
-                    <div>
-                        <div class="text-gray-300 mb-1 text-sm" data-lang-key="ping">تأخیر (Ping)</div>
-                        <div class="flex items-baseline gap-2">
-                            <div class="metric-value" id="pingValue">--</div>
-                            <div class="text-xs text-gray-500">ms</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="data-card p-4 flex items-center gap-4">
-                    <div class="text-4xl text-purple-400">💎</div>
-                    <div>
-                        <div class="text-gray-300 mb-1 text-sm" data-lang-key="connection-quality">کیفیت اتصال</div>
-                        <div class="flex items-baseline gap-2">
-                            <div id="connectionQuality">--</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            
-            <div class="text-center">
-                <button id="startSpeedTestBtn" class="btn-premium px-8 py-3 text-lg pulse-glow">
-                    <span data-lang-key="start-speed-test">🚀 شروع تست سرعت</span>
-                </button>
-            </div>
-        </div>
-
         <div class="glass p-6 mb-6">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center p-1 floating">
@@ -955,41 +877,26 @@
             </div>
         </div>
 
+        <div class="glass p-6 mb-6 security-coming-soon" id="speedTestSection">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center p-1 floating">
+                    <img src="https://static.vecteezy.com/system/resources/thumbnails/060/118/738/small/colorful-3d-gauge-with-red-yellow-green-segments-and-a-white-indicator-needle-pointing-to-green-on-a-transparent-background-png.png" alt="آیکون تست سرعت" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gradient" data-lang-key="speed-test-title">تست سرعت پیشرفته</h2>
+                    <p class="text-gray-300" data-lang-key="speed-test-description">اندازه‌گیری دقیق سرعت، تحلیل کیفیت و بهینه‌سازی</p>
+                </div>
+            </div>
+        </div>
+
         <div class="glass p-6 security-coming-soon">
-            <div class="flex items-center gap-4 mb-4">
+            <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center text-2xl floating">
                     🛡️
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold text-gradient" data-lang-key="security-test-title">تست امنیت</h2>
                     <p class="text-gray-300 text-sm" data-lang-key="security-test-description">ابزارهای امنیتی و اسکن آسیب‌پذیری</p>
-                </div>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass-light p-4">
-                    <h3 class="text-lg font-bold text-white mb-4" data-lang-key="security-tools">ابزارهای امنیتی</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="w-full btn-premium py-2 text-sm">Port Scanner</button>
-                        <button class="w-full btn-premium py-2 text-sm">تحلیل SSL/TLS</button>
-                        <button class="w-full btn-premium py-2 text-sm">Security Headers</button>
-                        <button class="w-full btn-premium py-2 text-sm">تست نفوذ</button>
-                    </div>
-                </div>
-                
-                <div class="glass-light p-4">
-                    <h3 class="text-lg font-bold text-white mb-4" data-lang-key="security-results">نتایج تست امنیت</h3>
-                    <div class="terminal" id="securityTerminal">
-                        <div class="terminal-header">
-                            <div class="terminal-btn fullscreen-btn" title="Fullscreen">⛶</div>
-                        </div>
-                        <div class="terminal-content" id="securityResults">
-                            <div class="text-center text-gray-400 mt-4">
-                                <p class="text-sm" data-lang-key="ready-security">آماده برای تست امنیت</p>
-                                <p class="text-xs mt-1" data-lang-key="select-tool">یکی از ابزارها را انتخاب کنید</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1085,7 +992,6 @@
             initializeMap();
             populateDNSList();
             setupAIHandlers();
-            document.getElementById('startSpeedTestBtn').addEventListener('click', startRealSpeedTest);
             const savedLang = localStorage.getItem('netsecure-lang') || 'fa';
             switchLanguage(savedLang);
         }
@@ -1112,10 +1018,6 @@
             showNotification(messages[type], 'info');
         }
         
-        function scrollToSpeedTest() {
-            document.getElementById('speedTestSection').scrollIntoView({ behavior: 'smooth' });
-        }
-        
         async function fetchWithFallback(urls) {
             for (const url of urls) {
                 try {
@@ -1130,18 +1032,24 @@
         }
 
         async function loadUserIP() {
+            // ===== شروع تغییرات =====
             const ipApiUrls = [
-                'https://ip-api.com/json/?fields=status,message,country,regionName,city,lat,lon,timezone,isp,org,query,postal',
-                'https://freeipapi.com/api/json/',
-                'https://ipinfo.io/json',
-                'https://ipapi.co/json/'
+                'https://my-ip-api.haj-taheri19.workers.dev/', // اولویت اول: Worker شما
+                'https://ip-api.com/json/?fields=status,message,country,regionName,city,lat,lon,timezone,isp,org,query,postal', // پشتیبان
+                'https://freeipapi.com/api/json/', // پشتیبان
+                'https://ipinfo.io/json', // پشتیبان
+                'https://ipapi.co/json/' // پشتیبان
             ];
+            // ===== پایان تغییرات =====
+
             const ipOtherInfoContainer = document.getElementById('ipOtherInfoContainer');
             const ipOtherInfo = document.getElementById('ipOtherInfo');
 
             try {
                 const data = await fetchWithFallback(ipApiUrls);
-                const ipAddress = data.query || data.ip || data.ipAddress || '---';
+                
+                // ===== شروع تغییرات (سازگاری با خروجی Worker) =====
+                const ipAddress = data.ip || data.query || data.ipAddress || '---';
                 document.getElementById('ipAddress').textContent = ipAddress;
                 
                 const ipTypeBadge = document.getElementById('ipTypeBadge');
@@ -1166,22 +1074,29 @@
                     ipOtherInfoContainer.style.display = 'none';
                 }
 
-                document.getElementById('ipLocation').textContent = `${data.city || data.cityName || ''}, ${data.regionName || data.region || ''}, ${data.country || data.country_name || data.countryName || ''}`;
-                document.getElementById('ipCoords').textContent = data.lat && data.lon ? `${data.lat.toFixed(4)}, ${data.lon.toFixed(4)}` : (data.latitude && data.longitude ? `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}` : '---');
-                
-                const isp = data.isp || '';
+                const country = data.country || data.country_name || data.countryName || data.location?.country || '';
+                const region = data.regionName || data.region || data.location?.state || '';
+                const city = data.city || data.cityName || data.location?.city || '';
+                document.getElementById('ipLocation').textContent = `${city}, ${region}, ${country}`;
+
+                const lat = data.lat || data.latitude || data.location?.latitude;
+                const lon = data.lon || data.longitude || data.location?.longitude;
+                document.getElementById('ipCoords').textContent = lat && lon ? `${parseFloat(lat).toFixed(4)}, ${parseFloat(lon).toFixed(4)}` : '---';
+
+                const isp = data.isp || data.company?.name || '';
                 const org = data.org || '';
                 document.getElementById('ipISP').textContent = (isp && org && isp.toLowerCase() !== org.toLowerCase()) ? `${isp} (${org})` : (isp || org || '---');
-                document.getElementById('ipTimezone').textContent = data.timezone || data.timeZone || '---';
-                document.getElementById('ipPostal').textContent = data.postal || data.postal_code || data.zipCode || '---';
                 
-                const lat = data.lat || data.latitude;
-                const lon = data.lon || data.longitude;
+                document.getElementById('ipTimezone').textContent = data.timezone || data.timeZone || data.location?.timezone || '---';
+                document.getElementById('ipPostal').textContent = data.postal || data.postal_code || data.zipCode || data.location?.zip || '---';
+                
                 if (map && lat && lon) {
                     map.setView([lat, lon], 10);
-                    L.marker([lat, lon]).addTo(map).bindPopup(`موقعیت شما: ${data.city || data.cityName}`).openPopup();
+                    L.marker([lat, lon]).addTo(map).bindPopup(`موقعیت شما: ${city}`).openPopup();
                 }
                 showNotification(`IP شما: ${ipAddress}`, 'info');
+
+                // ===== پایان تغییرات =====
 
             } catch (error) {
                 console.error('Error loading IP:', error);
@@ -1210,125 +1125,6 @@
             if (document.getElementById('map')._leaflet_id) return;
             map = L.map('map').setView([35.6892, 51.3890], 5);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
-        }
-        
-        function formatSpeed(speedMbps) {
-            if (speedMbps < 1 && speedMbps > 0) return { value: (speedMbps * 1000).toFixed(0), unit: 'Kbps' };
-            return { value: speedMbps.toFixed(2), unit: 'Mbps' };
-        }
-
-        function updateSpeedNeedle(speedMbps) {
-            const needle = document.getElementById('speedNeedle');
-            const maxSpeed = 100; // Max speed on the gauge in Mbps
-            const angle = -135 + (Math.min(speedMbps, maxSpeed) / maxSpeed) * 270;
-            needle.style.transform = `translateX(-50%) rotate(${angle}deg)`;
-            const formatted = formatSpeed(speedMbps);
-            document.getElementById('mainSpeedValue').textContent = formatted.value;
-            document.getElementById('mainSpeedUnit').textContent = formatted.unit;
-        }
-        
-        async function startRealSpeedTest() {
-            if (isSpeedTestRunning) return;
-            isSpeedTestRunning = true;
-            const startButton = document.getElementById('startSpeedTestBtn');
-            startButton.disabled = true;
-            startButton.querySelector('span').textContent = 'در حال تست...';
-            
-            resetSpeedTestUI();
-            
-            const ping = await measurePing();
-            document.getElementById('pingValue').textContent = Math.round(ping);
-
-            const downloadSpeedMbps = await measureDownloadSpeed(updateSpeedNeedle);
-            const formattedDownload = formatSpeed(downloadSpeedMbps);
-            document.getElementById('downloadSpeed').textContent = formattedDownload.value;
-            document.getElementById('downloadSpeedUnit').textContent = formattedDownload.unit;
-            updateSpeedNeedle(0);
-
-            const uploadSpeedMbps = await measureUploadSpeed();
-            const formattedUpload = formatSpeed(uploadSpeedMbps);
-            document.getElementById('uploadSpeed').textContent = formattedUpload.value;
-            document.getElementById('uploadSpeedUnit').textContent = formattedUpload.unit;
-
-            const qualityResult = assessConnectionQuality(downloadSpeedMbps, uploadSpeedMbps, ping);
-            const qualityElement = document.getElementById('connectionQuality');
-            qualityElement.textContent = qualityResult.text;
-            qualityElement.className = `quality-text ${qualityResult.className}`;
-
-            showNotification('تست سرعت کامل شد!', 'success');
-            isSpeedTestRunning = false;
-            startButton.disabled = false;
-            switchLanguage(localStorage.getItem('netsecure-lang') || 'fa');
-        }
-
-        function resetSpeedTestUI() {
-            ['downloadSpeed', 'uploadSpeed', 'pingValue'].forEach(id => document.getElementById(id).textContent = '--');
-            const qualityElement = document.getElementById('connectionQuality');
-            qualityElement.textContent = '--';
-            qualityElement.className = 'metric-value';
-            ['downloadSpeedUnit', 'uploadSpeedUnit', 'mainSpeedUnit'].forEach(id => document.getElementById(id).textContent = 'Mbps');
-            updateSpeedNeedle(0);
-        }
-        
-        async function measurePing() {
-            const urls = ['https://www.google.com/favicon.ico', 'https://www.cloudflare.com/favicon.ico'];
-            let totalTime = 0, successfulPings = 0;
-            for (const url of urls) {
-                const startTime = performance.now();
-                try { 
-                    await fetch(url + `?t=${Date.now()}`, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' });
-                    totalTime += performance.now() - startTime;
-                    successfulPings++;
-                } catch (e) {}
-            }
-            return successfulPings > 0 ? totalTime / successfulPings : 999;
-        }
-
-        async function measureDownloadSpeed(onProgress) {
-            const files = [ { url: 'https://speed.hetzner.de/10MB.bin', size: 1e7 }, { url: 'https://proof.ovh.net/files/10Mb.dat', size: 1.049e7 }, { url: 'https://cachefly.cachefly.net/10mb.test', size: 1.049e7 } ];
-            for (const file of files) {
-                try {
-                    const startTime = performance.now();
-                    const response = await fetch(file.url + `?t=${Date.now()}`, { cache: 'no-store' });
-                    const reader = response.body.getReader();
-                    let receivedLength = 0;
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-                        receivedLength += value.length;
-                        const elapsedTime = (performance.now() - startTime) / 1000;
-                        if (elapsedTime > 0.2) onProgress((receivedLength * 8) / (elapsedTime * 1e6));
-                    }
-                    const totalDuration = (performance.now() - startTime) / 1000;
-                    return (file.size * 8) / (totalDuration * 1e6);
-                } catch (e) {
-                    console.warn(`Download test failed for ${file.url}. Trying next server...`, e);
-                }
-            }
-            showNotification('خطا در تست دانلود. لطفا دوباره تلاش کنید.', 'error');
-            return 0;
-        }
-        
-        async function measureUploadSpeed() {
-             const server = { url: 'https://httpbin.org/post', size: 2 * 1024 * 1024 };
-             try {
-                const data = new Blob([new ArrayBuffer(server.size)], { type: 'application/octet-stream' });
-                const startTime = performance.now();
-                await fetch(server.url, { method: 'POST', body: data });
-                const duration = (performance.now() - startTime) / 1000;
-                return (server.size * 8) / (duration * 1e6);
-             } catch (e) {
-                console.warn(`Upload test failed for ${server.url}.`, e);
-                showNotification('خطا در تست آپلود. لطفا دوباره تلاش کنید.', 'error');
-                return 0;
-             }
-        }
-        
-        function assessConnectionQuality(dl, ul, ping) {
-            if (dl > 25 && ping < 30) return { text: 'عالی', className: 'quality-excellent' };
-            if (dl > 15 && ping < 60) return { text: 'خوب', className: 'quality-good' };
-            if (dl > 5 && ping < 120) return { text: 'متوسط', className: 'quality-medium' };
-            return { text: 'ضعیف', className: 'quality-weak' };
         }
         
         function populateDNSList() {

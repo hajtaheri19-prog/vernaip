@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta name="google-site-verification" content="oyGn4TtQj7aIFoOjMlbPY-4hjqiHFUCNcMOIV9G1MZA" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
@@ -151,14 +152,6 @@
             box-shadow: 0 12px 48px rgba(0, 212, 255, 0.4);
         }
 
-        .btn-premium:disabled {
-            background: linear-gradient(135deg, #4b5563, #6b7280);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        
         .btn-display-only {
             background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(168, 85, 247, 0.3));
             border: 2px solid rgba(0, 212, 255, 0.5);
@@ -211,16 +204,6 @@
             50% { background-position: 100% 50%; }
         }
         
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-family: var(--font-inter);
-        }
-
         .floating {
             animation: float 6s ease-in-out infinite;
         }
@@ -238,14 +221,14 @@
             background-size: 300% 300%;
             animation: textGradient 5s ease-in-out infinite;
         }
+
+        .text-glow {
+            text-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
+        }
         
         @keyframes textGradient {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
-        }
-        
-        .text-glow {
-            text-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
         }
         
         .notification {
@@ -274,7 +257,6 @@
         .notification.error { border-left: 3px solid var(--neon-red); }
         .notification.info { border-left: 3px solid var(--neon-blue); }
         
-        /* ===== START: Language Toggle Improvement ===== */
         .lang-toggle {
             background: rgba(15, 15, 35, 0.7);
             border: 1px solid var(--glass-border);
@@ -306,7 +288,6 @@
             box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
             transform: scale(1.05);
         }
-        /* ===== END: Language Toggle Improvement ===== */
 
         .dns-card {
             background: rgba(26, 26, 46, 0.7);
@@ -337,11 +318,10 @@
             color: var(--primary-dark);
         }
 
-        /* ===== START: Coming Soon Section Improvement ===== */
         .security-coming-soon {
             position: relative;
             overflow: hidden;
-            min-height: 150px; /* Ensure it has some height */
+            min-height: 150px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -366,9 +346,7 @@
             color: white;
             text-shadow: 0 0 15px var(--neon-purple);
         }
-        /* ===== END: Coming Soon Section Improvement ===== */
         
-        /* ===== START: Prevent Image Dragging ===== */
         .non-draggable {
             -webkit-user-drag: none;
             user-select: none;
@@ -377,14 +355,82 @@
             -ms-user-select: none;
             pointer-events: none;
         }
-        /* ===== END: Prevent Image Dragging ===== */
+
+        .pulse-glow {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 16px rgba(0, 212, 255, 0.3); }
+            50% { box-shadow: 0 0 32px rgba(0, 212, 255, 0.6); }
+        }
+        #ai-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        #ai-fab.hidden {
+            transform: scale(0.5);
+            opacity: 0;
+            pointer-events: none;
+        }
+        #ai-chat-modal {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 500px;
+            z-index: 1000;
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #ai-chat-modal.visible {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .ai-chat-window { width: 100%; height: 100%; display: flex; flex-direction: column; }
+        .ai-chat-header { padding: 12px 16px; border-bottom: 1px solid var(--glass-border); }
+        .ai-chat-messages { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        
+        .ai-message { padding: 10px 14px; border-radius: 12px; max-width: 80%; line-height: 1.5; min-width: 0; }
+        .ai-message p { 
+            overflow-wrap: break-word; 
+            word-break: break-word;
+            min-width: 0; 
+        }
+
+        .user-message { background: var(--neon-blue); color: var(--primary-dark); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .bot-message { background: var(--accent-dark); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .ai-chat-input-area { padding: 12px; border-top: 1px solid var(--glass-border); display: flex; gap: 8px; }
+        .ai-chat-input { flex-grow: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); border-radius: 10px; color: white; padding: 8px 12px; font-size: 14px; }
+        .ai-chat-input:focus { outline: none; border-color: var(--neon-blue); }
+        .ai-chat-send-btn { background: var(--neon-blue); border: none; border-radius: 10px; width: 40px; height: 40px; color: var(--primary-dark); font-size: 20px; cursor: pointer; }
+        .ai-chat-send-btn:disabled { background: #4b5563; cursor: not-allowed; }
+        .faq-button { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--neon-cyan); padding: 8px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+        .faq-button:hover { background: var(--neon-cyan); color: var(--primary-dark); }
+        .message-timestamp { font-size: 0.65rem; color: #9ca3af; margin-top: 4px; }
+        #ai-close-chat { background: none; border: none; color: rgba(255, 255, 255, 0.6); cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+        #ai-close-chat:hover { background-color: rgba(255, 255, 255, 0.1); color: white; transform: rotate(90deg); }
 
         @media (max-width: 1024px) {
-            .toolbar-nav {
-                display: none;
-            }
+            .toolbar-nav { display: none; }
         }
         @media (max-width: 768px) {
+            #ai-chat-modal { width: calc(100% - 40px); height: 60vh; right: 20px; bottom: 90px; }
             .glass { padding: 1rem; }
             .data-card { padding: 1rem; }
         }
@@ -405,14 +451,26 @@
                         <div class="text-xs text-gray-400" data-lang-key="site-subtitle">نیگار آی‌پی</div>
                     </div>
                 </div>
-
-                <nav class="toolbar-nav hidden lg:flex items-center gap-6">
-                    <a href="#ipAnalysisSection" class="text-gray-300 hover:text-white transition-colors duration-300">بررسی IP</a>
-                    <a href="#speedTestSection" class="text-gray-300 hover:text-white transition-colors duration-300">تست سرعت</a>
-                    <a href="#newsAndArticlesSection" class="text-gray-300 hover:text-white transition-colors duration-300">اخبار و مقالات</a>
-                    <a href="#footer" class="text-gray-300 hover:text-white transition-colors duration-300">درباره ما</a>
-                </nav>
                 
+                <nav class="toolbar-nav hidden lg:flex items-center gap-2">
+                    <a href="#ipAnalysisSection" class="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-300 rounded-xl px-4 py-2 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        <span>بررسی IP</span>
+                    </a>
+                    <a href="#speedTestSection" class="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-300 rounded-xl px-4 py-2 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <span>تست سرعت</span>
+                    </a>
+                    <a href="#newsAndArticlesSection" class="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-300 rounded-xl px-4 py-2 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-newspaper"></i>
+                        <span>اخبار و مقالات</span>
+                    </a>
+                    <a href="#footer" class="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-300 rounded-xl px-4 py-2 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>درباره ما</span>
+                    </a>
+                </nav>
+
                 <div class="flex items-center gap-4">
                     <div class="lang-toggle">
                         <div class="lang-btn active" onclick="switchLanguage('fa')" id="lang-fa">فا</div>
@@ -456,7 +514,6 @@
                     <p class="text-gray-300" data-lang-key="ip-analysis-description">در این قسمت می‌توانید مشخصات آی‌پی های مورد نظرتان را بررسی نمایید.</p>
                 </div>
             </div>
-            
             <div class="grid lg:grid-cols-2 gap-6">
                 <div class="glass-light p-4">
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-3">
@@ -497,17 +554,15 @@
                         </div>
                     </div>
                     <div class="flex gap-3 mt-4">
-                        <button onclick="refreshIP()" class="btn-premium px-4 py-2 text-sm flex-1">
-                            <span data-lang-key="refresh">🔄 تازه‌سازی</span>
+                        <button onclick="refreshIP()" class="btn-premium group px-4 py-2 text-sm flex-1 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrows-rotate transition-transform duration-300 group-hover:rotate-180"></i>
+                            <span data-lang-key="refresh">تازه‌سازی</span>
                         </button>
                     </div>
                 </div>
-                
                 <div class="glass-light p-4">
                     <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-3">
-                        <!-- ===== START: Improved Map Icon ===== -->
-                        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/location-pin-4035656-3337482.png" alt="آیکون نقشه" class="w-8 h-8 non-draggable" draggable="false">
-                        <!-- ===== END: Improved Map Icon ===== -->
+                        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/map-3d-icon-png-download-10156332.png" alt="آیکون نقشه" class="w-8 h-8 non-draggable" draggable="false">
                         <span data-lang-key="location-map">نقشه موقعیت</span>
                     </h3>
                     <div id="map" class="h-64 rounded-xl bg-gray-800 flex items-center justify-center">
@@ -601,15 +656,54 @@
             </p>
         </div>
     </footer>
-    
-    <!-- AI Assistant components are removed for brevity in this example -->
+
+    <div id="ai-fab" onclick="toggleAIChat()" class="p-2">
+        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/virtual-assistant-9505136-7781237.png" alt="دستیار هوش مصنوعی" class="w-full h-full object-contain non-draggable" draggable="false">
+    </div>
+    <div id="ai-chat-modal">
+        <div class="ai-chat-window glass">
+            <div class="ai-chat-header flex justify-between items-center">
+                <div>
+                    <h3 class="text-white font-bold">دستیار هوش مصنوعی</h3>
+                    <p class="text-xs text-gray-400">متخصص DNS، IP و سرعت</p>
+                </div>
+                <div class="flex items-center gap-2">
+                     <button id="ai-back-to-faq" class="faq-button !p-2 hidden">بازگشت</button>
+                     <button id="ai-close-chat" title="بستن">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                     </button>
+                </div>
+            </div>
+            <div id="ai-faq-view">
+                <div class="p-3 border-b border-gray-700">
+                    <p class="text-xs text-center text-gray-400 mb-2">سوالات متداول:</p>
+                    <div class="grid grid-cols-2 gap-2" id="faq-modal-container">
+                    </div>
+                </div>
+                <div class="p-4">
+                    <button id="ai-start-chat" class="w-full btn-premium py-3 text-sm">
+                        💬 گفتگو با هوش مصنوعی
+                    </button>
+                </div>
+            </div>
+            <div id="ai-chat-view" class="hidden flex-grow flex-col">
+                <div class="ai-chat-messages" id="aiChatMessages">
+                </div>
+                <div id="ai-chat-limit" class="text-center text-xs text-yellow-400 py-1"></div>
+                <div class="ai-chat-input-area">
+                    <input type="text" id="aiChatInput" class="ai-chat-input" placeholder="در حال توسعه..." readonly>
+                    <button id="aiChatSendBtn" class="ai-chat-send-btn" disabled>➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         let map = null;
         
         const translations = {
-            'fa': { 'site-title': 'Nigar IP', 'site-subtitle': 'نیگار آی‌پی', 'main-title': 'Nigar IP - نیگار آی‌پی', 'main-description': 'بررسی و تحلیل جامع IP، تست سرعت پیشرفته، امنیت شبکه و DNS بهینه برای گیمرها و برنامه‌نویسان', 'quick-scan': '🚀 اسکن سریع', 'security-test': '🔍 تست امنیت', 'speed-test': '⚡ تست سرعت', 'ip-analysis-title': 'بررسی آی‌پی', 'ip-analysis-description': 'در این قسمت می‌توانید مشخصات آی‌پی های مورد نظرتان را بررسی نمایید.', 'ip-details': 'اطلاعات تفصیلی IP', 'refresh': '🔄 تازه‌سازی', 'location-map': 'نقشه موقعیت', 'map-loading': 'نقشه در حال بارگذاری...', 'speed-test-title': 'تست سرعت پیشرفته', 'speed-test-description': 'اندازه‌گیری دقیق سرعت، تحلیل کیفیت و بهینه‌سازی', 'dns-title': 'بهینه‌سازی DNS', 'dns-description': 'سریع‌ترین و امن‌ترین DNS را برای اتصال خود انتخاب کنید.', 'security-test-title': 'تست امنیت', 'security-test-description': 'ابزارهای امنیتی و اسکن آسیب‌پذیری', 'copyright': '© 2025 Nigar IP. ساخته شده با ❤️ برای جامعه فناوری ایران' },
-            'en': { 'site-title': 'Nigar IP', 'site-subtitle': 'Nigar IP', 'main-title': 'Nigar IP', 'main-description': 'Comprehensive IP analysis, advanced speed testing, network security and optimized DNS for gamers and developers', 'quick-scan': '🚀 Quick Scan', 'security-test': '🔍 Security Test', 'speed-test': '⚡ Speed Test', 'ip-analysis-title': 'IP Analysis', 'ip-analysis-description': 'Check the specifications of your desired IPs.', 'ip-details': 'Detailed IP Information', 'refresh': '🔄 Refresh', 'location-map': 'Location Map', 'map-loading': 'Map is loading...', 'speed-test-title': 'Advanced Speed Test', 'speed-test-description': 'Accurate speed measurement, quality analysis and optimization', 'dns-title': 'DNS Optimization', 'dns-description': 'Choose the fastest and most secure DNS for your connection.', 'security-test-title': 'Security Test', 'security-test-description': 'Security tools and vulnerability scanning', 'copyright': '© 2025 Nigar IP. Made with ❤️ for Iran Tech Community' }
+            'fa': { 'site-title': 'Nigar IP', 'site-subtitle': 'نیگار آی‌پی', 'main-title': 'Nigar IP - نیگار آی‌پی', 'main-description': 'بررسی و تحلیل جامع IP، تست سرعت پیشرفته، امنیت شبکه و DNS بهینه برای گیمرها و برنامه‌نویسان', 'quick-scan': '🚀 اسکن سریع', 'security-test': '🔍 تست امنیت', 'speed-test': '⚡ تست سرعت', 'ip-analysis-title': 'بررسی آی‌پی', 'ip-analysis-description': 'در این قسمت می‌توانید مشخصات آی‌پی های مورد نظرتان را بررسی نمایید.', 'ip-details': 'اطلاعات تفصیلی IP', 'refresh': 'تازه‌سازی', 'location-map': 'نقشه موقعیت', 'map-loading': 'نقشه در حال بارگذاری...', 'speed-test-title': 'تست سرعت پیشرفته', 'speed-test-description': 'اندازه‌گیری دقیق سرعت، تحلیل کیفیت و بهینه‌سازی', 'dns-title': 'بهینه‌سازی DNS', 'dns-description': 'سریع‌ترین و امن‌ترین DNS را برای اتصال خود انتخاب کنید.', 'security-test-title': 'تست امنیت', 'security-test-description': 'ابزارهای امنیتی و اسکن آسیب‌پذیری', 'copyright': '© 2025 Nigar IP. ساخته شده با ❤️ برای جامعه فناوری ایران' },
+            'en': { 'site-title': 'Nigar IP', 'site-subtitle': 'Nigar IP', 'main-title': 'Nigar IP', 'main-description': 'Comprehensive IP analysis, advanced speed testing, network security and optimized DNS for gamers and developers', 'quick-scan': '🚀 Quick Scan', 'security-test': '🔍 Security Test', 'speed-test': '⚡ Speed Test', 'ip-analysis-title': 'IP Analysis', 'ip-analysis-description': 'Check the specifications of your desired IPs.', 'ip-details': 'Detailed IP Information', 'refresh': 'Refresh', 'location-map': 'Location Map', 'map-loading': 'Map is loading...', 'speed-test-title': 'Advanced Speed Test', 'speed-test-description': 'Accurate speed measurement, quality analysis and optimization', 'dns-title': 'DNS Optimization', 'dns-description': 'Choose the fastest and most secure DNS for your connection.', 'security-test-title': 'Security Test', 'security-test-description': 'Security tools and vulnerability scanning', 'copyright': '© 2025 Nigar IP. Made with ❤️ for Iran Tech Community' }
         };
         const dnsServers = {
             'cloudflare': { name: '🚀 Cloudflare (گیمرها)', primary: '1.1.1.1', secondary: '1.0.0.1', description: 'سریع‌ترین DNS عمومی جهان، ایده‌آل برای کاهش پینگ در بازی‌ها.' },
@@ -627,6 +721,7 @@
             loadUserIP();
             initializeMap();
             populateDNSList();
+            setupAIHandlers();
             const savedLang = localStorage.getItem('netsecure-lang') || 'fa';
             switchLanguage(savedLang);
         }
@@ -668,7 +763,7 @@
 
         async function loadUserIP() {
             const ipApiUrls = [
-                'https://my-ip-api.haj-taheri19.workers.dev/', 
+                'https://my-ip-api.haj-taheri19.workers.dev/',
                 'https://ip-api.com/json/?fields=status,message,country,regionName,city,lat,lon,timezone,isp,org,query,postal',
                 'https://freeipapi.com/api/json/',
                 'https://ipinfo.io/json',
@@ -752,9 +847,7 @@
 
         function initializeMap() {
             if (document.getElementById('map')._leaflet_id) return;
-            // ===== START: Remove Map Attribution =====
             map = L.map('map', { attributionControl: false }).setView([35.6892, 51.3890], 5);
-            // ===== END: Remove Map Attribution =====
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
         }
         
@@ -789,6 +882,68 @@
             container.appendChild(notif);
             setTimeout(() => notif.classList.add('show'), 10);
             setTimeout(() => { notif.classList.remove('show'); setTimeout(() => notif.remove(), 500); }, 4500);
+        }
+
+        const aiKnowledgeBase = {
+            "IP چیست؟": "آدرس IP یک شناسه عددی منحصربه‌فرد است که به هر دستگاه متصل به اینترنت اختصاص داده می‌شود. این آدرس برای مسیریابی داده‌ها و شناسایی دستگاه‌ها در شبکه جهانی استفاده می‌شود. دو نسخه اصلی آن IPv4 (مانند 192.168.1.1) و IPv6 (نسخه جدیدتر با فضای آدرس بسیار بزرگتر) هستند.",
+            "DNS چیست؟": "DNS یا (Domain Name System) مانند دفترچه تلفن اینترنت عمل می‌کند. وظیفه آن ترجمه نام‌های دامنه قابل خواندن برای انسان (مثل google.com) به آدرس‌های IP عددی است که کامپیوترها برای ارتباط با یکدیگر از آن استفاده می‌کنند.",
+            "بهترین DNS کدام است؟": "«بهترین» DNS به نیاز شما بستگی دارد. برای کاهش پینگ در بازی، Cloudflare (1.1.1.1) معمولاً سریع‌ترین است. برای پایداری و استفاده عمومی، Google (8.8.8.8) انتخاب خوبی است. برای عبور از تحریم‌های وب‌سایت‌ها، DNSهای ایرانی مانند شکن یا الکترو مناسب هستند. پیشنهاد می‌شود چند مورد را تست کنید تا بهترین گزینه را برای اتصال خود پیدا کنید.",
+            "پینگ چیست؟": "پینگ (Ping) یا تأخیر (Latency)، مدت زمانی است که طول می‌کشد تا یک بسته کوچک داده از دستگاه شما به یک سرور در اینترنت ارسال شده و پاسخ آن بازگردد. این زمان بر حسب میلی‌ثانیه (ms) اندازه‌گیری می‌شود. پینگ پایین‌تر به معنای ارتباط سریع‌تر و روان‌تر، خصوصاً در بازی‌های آنلاین و تماس‌های ویدیویی است.",
+            "چطور پینگ را کاهش دهم؟": "برای کاهش پینگ می‌توانید از اتصال کابلی (LAN) به جای وای‌فای استفاده کنید، برنامه‌هایی که در پس‌زمینه اینترنت مصرف می‌کنند را ببندید، از DNSهای سریع استفاده کنید و در بازی‌های آنلاین، سروری را انتخاب کنید که از نظر جغرافیایی به شما نزدیک‌تر است.",
+            "تفاوت IPv4 و IPv6": "IPv4 نسخه قدیمی‌تر پروتکل اینترنت است و حدود ۴.۳ میلیارد آدرس منحصربه‌فرد را پشتیبانی می‌کند که امروزه تقریباً تمام شده‌اند. IPv6 نسخه جدیدتر با فضای آدرس تقریباً نامحدود است که امنیت بهتری دارد و برای آینده اینترنت طراحی شده است.",
+            "ISP چیست؟": "ISP یا ارائه‌دهنده خدمات اینترنت (Internet Service Provider) شرکتی است که دسترسی به اینترنت را برای شما فراهم می‌کند. در ایران، شرکت‌هایی مانند مخابرات، همراه اول، ایرانسل و شاتل نمونه‌هایی از ISP هستند.",
+            "VPN چیست و آیا امن است؟": "VPN یا شبکه خصوصی مجازی، یک تونل امن و رمزگذاری‌شده بین دستگاه شما و اینترنت ایجاد می‌کند. این کار باعث افزایش حریم خصوصی و امنیت شما می‌شود و می‌تواند به شما در عبور از محدودیت‌های جغرافیایی کمک کند. استفاده از یک سرویس VPN معتبر عموماً امن است.",
+            "تست سرعت چگونه کار می‌کند؟": "تست سرعت با ارسال و دریافت بسته‌های داده بین دستگاه شما و یک سرور تست نزدیک، عملکرد اتصال اینترنت شما را اندازه‌گیری می‌کند. این تست سه معیار اصلی را می‌سنجد: سرعت دانلود (دریافت داده)، سرعت آپلود (ارسال داده) و پینگ (زمان پاسخ‌دهی).",
+            "نشت WebRTC چیست؟": "WebRTC یک فناوری برای ارتباطات صوتی و ویدیویی در مرورگرهاست. گاهی اوقات، حتی با وجود استفاده از VPN، WebRTC می‌تواند آدرس IP واقعی شما را فاش کند که به آن «نشت WebRTC» می‌گویند. ابزارهای امنیتی پیشرفته می‌توانند این نوع نشت را شناسایی و از آن جلوگیری کنند."
+        };
+
+        function setupAIHandlers() {
+            const faqContainer = document.getElementById('faq-modal-container');
+            if(faqContainer) faqContainer.innerHTML = Object.keys(aiKnowledgeBase).map(q => `<button class="faq-button">${q}</button>`).join('');
+            document.querySelectorAll('#faq-modal-container .faq-button').forEach(btn => btn.onclick = () => handleFAQClick(btn.textContent));
+            document.getElementById('ai-start-chat').onclick = () => showNotification('این بخش در حال توسعه است و بزودی فعال می‌شود.', 'info');
+            document.getElementById('ai-back-to-faq').onclick = showFaqView;
+            document.getElementById('ai-close-chat').onclick = toggleAIChat;
+        }
+        
+        function showFaqView() {
+            document.getElementById('ai-faq-view').classList.remove('hidden');
+            document.getElementById('ai-chat-view').classList.add('hidden');
+            document.getElementById('ai-back-to-faq').classList.add('hidden');
+        }
+
+        function showChatView() {
+            document.getElementById('ai-faq-view').classList.add('hidden');
+            document.getElementById('ai-chat-view').classList.remove('hidden');
+            document.getElementById('ai-back-to-faq').classList.remove('hidden');
+            document.getElementById('aiChatMessages').innerHTML = '';
+        }
+        
+        function openAIFaq() {
+            if (!document.getElementById('ai-chat-modal').classList.contains('visible')) toggleAIChat();
+            showFaqView();
+        }
+
+        function toggleAIChat() {
+            const modal = document.getElementById('ai-chat-modal');
+            modal.classList.toggle('visible');
+            document.getElementById('ai-fab').classList.toggle('hidden');
+            if (modal.classList.contains('visible')) showFaqView();
+        }
+        
+        function handleFAQClick(question) {
+            showChatView();
+            addMessageToChat(question, 'user');
+            setTimeout(() => addMessageToChat(aiKnowledgeBase[question], 'bot'), 300);
+        }
+
+        function addMessageToChat(text, sender) {
+            const container = document.getElementById('aiChatMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `ai-message ${sender}-message`;
+            msgDiv.innerHTML = `<p>${text}</p><div class="message-timestamp">${new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}</div>`;
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
         }
     </script>
 </body>
